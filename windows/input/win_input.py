@@ -15,6 +15,7 @@ from .keycodes import (
     MOUSEEVENTF_MOVE, MOUSEEVENTF_LEFTDOWN, MOUSEEVENTF_LEFTUP,
     MOUSEEVENTF_RIGHTDOWN, MOUSEEVENTF_RIGHTUP,
     MOUSEEVENTF_MIDDLEDOWN, MOUSEEVENTF_MIDDLEUP,
+    MOUSEEVENTF_XDOWN, MOUSEEVENTF_XUP,
     MOUSEEVENTF_WHEEL,
     KEYEVENTF_EXTENDEDKEY, KEYEVENTF_KEYUP, KEYEVENTF_SCANCODE,
     EXTENDED_KEYS
@@ -155,16 +156,23 @@ class WindowsInputController:
 
     def mouse_down(self, button: str) -> bool:
         """
-        Press mouse button ('left', 'right', 'middle').
+        Press mouse button ('left', 'right', 'middle', 'x1', 'x2', 'back', 'forward').
         """
         button = button.lower()
-        flag_map = {
-            "left": MOUSEEVENTF_LEFTDOWN,
-            "right": MOUSEEVENTF_RIGHTDOWN,
-            "middle": MOUSEEVENTF_MIDDLEDOWN
-        }
-        flag = flag_map.get(button)
-        if not flag:
+        mouse_data = 0
+        if button == "left":
+            flag = MOUSEEVENTF_LEFTDOWN
+        elif button == "right":
+            flag = MOUSEEVENTF_RIGHTDOWN
+        elif button == "middle":
+            flag = MOUSEEVENTF_MIDDLEDOWN
+        elif button in ("x1", "back", "mouse4"):
+            flag = MOUSEEVENTF_XDOWN
+            mouse_data = 0x0001
+        elif button in ("x2", "forward", "mouse5"):
+            flag = MOUSEEVENTF_XDOWN
+            mouse_data = 0x0002
+        else:
             logger.warning(f"Unsupported mouse button: {button}")
             return False
 
@@ -179,14 +187,14 @@ class WindowsInputController:
 
             inp = INPUT(type=INPUT_MOUSE)
             inp.union.mi = MOUSEINPUT(
-                dx=0, dy=0, mouseData=0,
+                dx=0, dy=0, mouseData=mouse_data,
                 dwFlags=flag,
                 time=0, dwExtraInfo=0
             )
             ok = self._send(inp)
             if not ok and hasattr(self, '_user32'):
                 try:
-                    self._user32.mouse_event(flag, 0, 0, 0, 0)
+                    self._user32.mouse_event(flag, 0, 0, mouse_data, 0)
                     return True
                 except Exception:
                     pass
@@ -194,16 +202,23 @@ class WindowsInputController:
 
     def mouse_up(self, button: str) -> bool:
         """
-        Release mouse button ('left', 'right', 'middle').
+        Release mouse button ('left', 'right', 'middle', 'x1', 'x2', 'back', 'forward').
         """
         button = button.lower()
-        flag_map = {
-            "left": MOUSEEVENTF_LEFTUP,
-            "right": MOUSEEVENTF_RIGHTUP,
-            "middle": MOUSEEVENTF_MIDDLEUP
-        }
-        flag = flag_map.get(button)
-        if not flag:
+        mouse_data = 0
+        if button == "left":
+            flag = MOUSEEVENTF_LEFTUP
+        elif button == "right":
+            flag = MOUSEEVENTF_RIGHTUP
+        elif button == "middle":
+            flag = MOUSEEVENTF_MIDDLEUP
+        elif button in ("x1", "back", "mouse4"):
+            flag = MOUSEEVENTF_XUP
+            mouse_data = 0x0001
+        elif button in ("x2", "forward", "mouse5"):
+            flag = MOUSEEVENTF_XUP
+            mouse_data = 0x0002
+        else:
             return False
 
         with self._lock:
@@ -217,14 +232,14 @@ class WindowsInputController:
 
             inp = INPUT(type=INPUT_MOUSE)
             inp.union.mi = MOUSEINPUT(
-                dx=0, dy=0, mouseData=0,
+                dx=0, dy=0, mouseData=mouse_data,
                 dwFlags=flag,
                 time=0, dwExtraInfo=0
             )
             ok = self._send(inp)
             if not ok and hasattr(self, '_user32'):
                 try:
-                    self._user32.mouse_event(flag, 0, 0, 0, 0)
+                    self._user32.mouse_event(flag, 0, 0, mouse_data, 0)
                     return True
                 except Exception:
                     pass

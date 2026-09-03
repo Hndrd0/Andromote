@@ -122,6 +122,10 @@ FRIENDLY_ACTIONS = {
     "MOUSE_LEFT": ("mouse", "left"),
     "MOUSE_RIGHT": ("mouse", "right"),
     "MOUSE_MIDDLE": ("mouse", "middle"),
+    "MOUSE_BACK": ("mouse", "x1"),
+    "MOUSE_FORWARD": ("mouse", "x2"),
+    "MOUSE_X1": ("mouse", "x1"),
+    "MOUSE_X2": ("mouse", "x2"),
     "MOUSE_WHEEL_UP": ("mouse_wheel", 120),
     "MOUSE_WHEEL_DOWN": ("mouse_wheel", -120),
 
@@ -145,7 +149,7 @@ FRIENDLY_ACTIONS = {
     "KEY_PLUS": ("keyboard", VK_OEM_PLUS),
     "KEY_MINUS": ("keyboard", VK_OEM_MINUS),
 
-    # Presentation Keys
+    # Navigation & Function Keys
     "KEY_F5": ("keyboard", VK_F5),
     "KEY_PAGEUP": ("keyboard", VK_PRIOR),
     "KEY_PAGEDOWN": ("keyboard", VK_NEXT),

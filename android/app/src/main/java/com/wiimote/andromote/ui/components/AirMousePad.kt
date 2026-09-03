@@ -1,20 +1,18 @@
 package com.wiimote.andromote.ui.components
 
 import android.view.HapticFeedbackConstants
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalView
@@ -24,9 +22,13 @@ import androidx.compose.ui.unit.sp
 import com.wiimote.andromote.ui.theme.*
 
 /**
- * Air Mouse Pad:
- * High-precision motion-controlled air mouse interface with primary/secondary clicks,
- * touch scroll strip, double-click, presentation slide deck controls, and clutch freeze.
+ * Authentic Air Mouse Pad:
+ * Turns the phone into a true, ergonomic desktop computer mouse with:
+ * - Primary Left Click, Central Scroll Wheel (with Middle Click), and Right Click
+ * - Side Thumb Buttons: Mouse 4 (Back) and Mouse 5 (Forward)
+ * - Quick Double Click and Left-Click Drag Lock
+ * - Hardware DPI Selector (800 / 1600 / 2400 DPI)
+ * - Lift Clutch (Cursor Freeze) and Zero-Angle Recenter
  */
 @Composable
 fun AirMousePad(
@@ -35,236 +37,236 @@ fun AirMousePad(
     onButtonEvent: (button: String, state: String) -> Unit,
     onRecenter: () -> Unit
 ) {
-    var showPresentationControls by remember { mutableStateOf(true) }
+    var isDragLocked by remember { mutableStateOf(false) }
+    var currentDpiIndex by remember { mutableStateOf(1) } // 0: 800, 1: 1600, 2: 2400
+    val dpiLevels = listOf("800 DPI", "1600 DPI", "2400 DPI")
+    val view = LocalView.current
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(12.dp),
+            .padding(horizontal = 14.dp, vertical = 10.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        // --- 1. Top Primary & Secondary Mouse Clicks ---
+        // --- 1. Ergonomic Mouse Top Shell: Left Click | Scroll Wheel / Middle Click | Right Click ---
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(130.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                .weight(1.35f),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            // Left Click (Large Primary)
+            // Left Click (Primary Button)
             AirMouseButton(
                 label = "LEFT CLICK",
-                sublabel = "Select / Drag",
+                sublabel = if (isDragLocked) "DRAG LOCKED" else "Primary / Select",
                 modifier = Modifier
-                    .weight(1.3f)
+                    .weight(1.25f)
                     .fillMaxHeight(),
-                accentColor = AccentCyan,
+                accentColor = if (isDragLocked) AccentAmber else AccentCyan,
                 textColor = BgPrimary,
-                onButtonEvent = { state -> onButtonEvent("MOUSE_LEFT", state) }
+                fontSize = 15.sp,
+                onButtonEvent = { state ->
+                    if (!isDragLocked) {
+                        onButtonEvent("MOUSE_LEFT", state)
+                    }
+                }
             )
 
-            // Right Click
+            // Center Column: Tactile Scroll Wheel & Middle Click
+            IntegratedScrollWheel(
+                modifier = Modifier
+                    .weight(0.95f)
+                    .fillMaxHeight(),
+                onScroll = { isUp ->
+                    val btn = if (isUp) "MOUSE_WHEEL_UP" else "MOUSE_WHEEL_DOWN"
+                    onButtonEvent(btn, "down")
+                    onButtonEvent(btn, "up")
+                },
+                onMiddleClick = { state ->
+                    onButtonEvent("MOUSE_MIDDLE", state)
+                }
+            )
+
+            // Right Click (Secondary Button)
             AirMouseButton(
                 label = "RIGHT CLICK",
                 sublabel = "Context Menu",
                 modifier = Modifier
-                    .weight(1f)
+                    .weight(1.1f)
                     .fillMaxHeight(),
                 accentColor = BgElevated,
                 textColor = TextPrimary,
                 borderColor = BorderSubtle,
+                fontSize = 14.sp,
                 onButtonEvent = { state -> onButtonEvent("MOUSE_RIGHT", state) }
             )
         }
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        // --- 2. Middle Action Bar: Scroll Strip, Middle Click, Double Click ---
+        // --- 2. Side / Thumb Navigation Buttons (Mouse 4 & Mouse 5) ---
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(110.dp),
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .height(54.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            // Touch Scroll Strip
-            ScrollWheelStrip(
+            // Mouse 4 (Browser Back)
+            AirMouseButton(
+                label = "◀ BACK (MOUSE 4)",
+                sublabel = "Browser / File Nav",
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxHeight(),
-                onScroll = { isUp ->
-                    val btn = if (isUp) "MOUSE_WHEEL_UP" else "MOUSE_WHEEL_DOWN"
-                    onButtonEvent(btn, "down")
-                    onButtonEvent(btn, "up")
+                accentColor = BgElevated,
+                textColor = TextPrimary,
+                borderColor = BorderSubtle,
+                fontSize = 12.sp,
+                onButtonEvent = { state -> onButtonEvent("MOUSE_BACK", state) }
+            )
+
+            // Mouse 5 (Browser Forward)
+            AirMouseButton(
+                label = "FORWARD (MOUSE 5) ▶",
+                sublabel = "Browser / File Nav",
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight(),
+                accentColor = BgElevated,
+                textColor = TextPrimary,
+                borderColor = BorderSubtle,
+                fontSize = 12.sp,
+                onButtonEvent = { state -> onButtonEvent("MOUSE_FORWARD", state) }
+            )
+        }
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        // --- 3. Productivity Mouse Tools: Double Click, Drag Lock, DPI Switch ---
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            // Instant Double Click
+            AirMouseQuickButton(
+                label = "Double Click",
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight(),
+                accentColor = BgElevated,
+                textColor = TextPrimary,
+                fontSize = 11.sp,
+                onClick = {
+                    onButtonEvent("MOUSE_LEFT", "down")
+                    onButtonEvent("MOUSE_LEFT", "up")
+                    onButtonEvent("MOUSE_LEFT", "down")
+                    onButtonEvent("MOUSE_LEFT", "up")
                 }
             )
 
-            // Utility buttons column
-            Column(
+            // Left-Click Drag Lock Toggle
+            Button(
+                onClick = {
+                    view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                    isDragLocked = !isDragLocked
+                    if (isDragLocked) {
+                        onButtonEvent("MOUSE_LEFT", "down")
+                    } else {
+                        onButtonEvent("MOUSE_LEFT", "up")
+                    }
+                },
+                modifier = Modifier
+                    .weight(1.1f)
+                    .fillMaxHeight(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if (isDragLocked) AccentAmber else BgElevated,
+                    contentColor = if (isDragLocked) BgPrimary else TextPrimary
+                ),
+                shape = RoundedCornerShape(10.dp),
+                border = if (!isDragLocked) androidx.compose.foundation.BorderStroke(1.dp, BorderSubtle) else null,
+                contentPadding = PaddingValues(horizontal = 4.dp, vertical = 4.dp)
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = if (isDragLocked) "DRAG LOCKED" else "Drag Lock",
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = if (isDragLocked) "Tap to Drop" else "Hold to Move",
+                        fontSize = 9.sp,
+                        color = if (isDragLocked) BgPrimary.copy(alpha = 0.8f) else TextSecondary
+                    )
+                }
+            }
+
+            // Hardware DPI Cycle Switcher
+            Button(
+                onClick = {
+                    view.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
+                    currentDpiIndex = (currentDpiIndex + 1) % dpiLevels.size
+                },
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxHeight(),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = BgElevated,
+                    contentColor = AccentCyan
+                ),
+                shape = RoundedCornerShape(10.dp),
+                border = androidx.compose.foundation.BorderStroke(1.dp, BorderSubtle),
+                contentPadding = PaddingValues(horizontal = 4.dp, vertical = 4.dp)
             ) {
-                // Double Click Button
-                AirMouseQuickButton(
-                    label = "Double Click",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f),
-                    onClick = {
-                        onButtonEvent("MOUSE_LEFT", "down")
-                        onButtonEvent("MOUSE_LEFT", "up")
-                        onButtonEvent("MOUSE_LEFT", "down")
-                        onButtonEvent("MOUSE_LEFT", "up")
-                    }
-                )
-
-                // Middle Click Button
-                AirMouseButton(
-                    label = "Middle Click",
-                    sublabel = "Tab / Pan",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f),
-                    accentColor = BgElevated,
-                    textColor = TextSecondary,
-                    fontSize = 13.sp,
-                    onButtonEvent = { state -> onButtonEvent("MOUSE_MIDDLE", state) }
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        // --- 3. Presentation Controls Deck ---
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = BgSurface),
-            shape = RoundedCornerShape(14.dp),
-            border = androidx.compose.foundation.BorderStroke(1.dp, BorderSubtle)
-        ) {
-            Column(modifier = Modifier.padding(10.dp)) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text("DPI SPEED", fontSize = 9.sp, color = TextSecondary)
                     Text(
-                        text = "Presentation Tools",
-                        color = AccentCyan,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Bold
+                        text = dpiLevels[currentDpiIndex],
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = AccentCyan
                     )
-                    TextButton(
-                        onClick = { showPresentationControls = !showPresentationControls },
-                        contentPadding = PaddingValues(horizontal = 6.dp, vertical = 2.dp)
-                    ) {
-                        Text(
-                            text = if (showPresentationControls) "Hide" else "Show",
-                            color = TextTertiary,
-                            fontSize = 11.sp
-                        )
-                    }
-                }
-
-                AnimatedVisibility(visible = showPresentationControls) {
-                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        // Prev / Next slide buttons
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            AirMouseQuickButton(
-                                label = "◀ Prev Slide",
-                                modifier = Modifier.weight(1f),
-                                onClick = {
-                                    onButtonEvent("KEY_PAGEUP", "down")
-                                    onButtonEvent("KEY_PAGEUP", "up")
-                                }
-                            )
-                            AirMouseQuickButton(
-                                label = "Next Slide ▶",
-                                modifier = Modifier.weight(1f),
-                                accentColor = AccentCyan,
-                                textColor = BgPrimary,
-                                onClick = {
-                                    onButtonEvent("KEY_PAGEDOWN", "down")
-                                    onButtonEvent("KEY_PAGEDOWN", "up")
-                                }
-                            )
-                        }
-
-                        // Auxiliary Slide Keys
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            AirMouseQuickButton(
-                                label = "Start (F5)",
-                                modifier = Modifier.weight(1f),
-                                fontSize = 11.sp,
-                                onClick = {
-                                    onButtonEvent("KEY_F5", "down")
-                                    onButtonEvent("KEY_F5", "up")
-                                }
-                            )
-                            AirMouseQuickButton(
-                                label = "Exit (Esc)",
-                                modifier = Modifier.weight(1f),
-                                fontSize = 11.sp,
-                                onClick = {
-                                    onButtonEvent("KEY_ESCAPE", "down")
-                                    onButtonEvent("KEY_ESCAPE", "up")
-                                }
-                            )
-                            AirMouseQuickButton(
-                                label = "Blank Screen",
-                                modifier = Modifier.weight(1f),
-                                fontSize = 11.sp,
-                                onClick = {
-                                    onButtonEvent("KEY_B", "down")
-                                    onButtonEvent("KEY_B", "up")
-                                }
-                            )
-                        }
-                    }
                 }
             }
         }
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        // --- 4. Bottom Controls: Freeze Clutch & Recenter ---
+        // --- 4. Bottom Controls: Lift Clutch & Neutral Recenter ---
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            // Clutch (Freeze / Move toggle)
+            // Clutch (Lift Mouse / Move Toggle)
             Button(
                 onClick = onToggleFreeze,
                 modifier = Modifier
-                    .weight(1.4f)
-                    .height(48.dp),
+                    .weight(1.3f)
+                    .fillMaxHeight(),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = if (isMotionFrozen) AccentAmber else BgElevated,
                     contentColor = if (isMotionFrozen) BgPrimary else TextPrimary
                 ),
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(12.dp),
+                border = if (!isMotionFrozen) androidx.compose.foundation.BorderStroke(1.dp, BorderSubtle) else null
             ) {
                 Text(
-                    text = if (isMotionFrozen) "Motion Paused" else "Freeze Pointer",
+                    text = if (isMotionFrozen) "Pointer Paused" else "Lift Clutch",
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Bold
                 )
             }
 
-            // Recenter
+            // Neutral Calibration Recenter
             Button(
                 onClick = onRecenter,
                 modifier = Modifier
                     .weight(1f)
-                    .height(48.dp),
+                    .fillMaxHeight(),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = AccentGreen,
                     contentColor = BgPrimary
@@ -278,7 +280,7 @@ fun AirMousePad(
 }
 
 /**
- * Tactile Mouse Button with down/up state dispatch and haptics.
+ * Tactile Mouse Button with press/release dispatch and haptics.
  */
 @Composable
 fun AirMouseButton(
@@ -287,38 +289,45 @@ fun AirMouseButton(
     modifier: Modifier = Modifier,
     accentColor: Color = BgElevated,
     textColor: Color = TextPrimary,
-    borderColor: Color = BorderSubtle,
-    fontSize: androidx.compose.ui.unit.TextUnit = 16.sp,
+    borderColor: Color? = null,
+    fontSize: androidx.compose.ui.unit.TextUnit = 14.sp,
     onButtonEvent: (state: String) -> Unit
 ) {
-    var isPressed by remember { mutableStateOf(false) }
     val view = LocalView.current
+    var isPressed by remember { mutableStateOf(false) }
 
-    val bgColor = if (isPressed) AccentCyan else accentColor
+    val curBg = if (isPressed) AccentCyan else accentColor
     val curTextColor = if (isPressed) BgPrimary else textColor
-    val curBorder = if (isPressed) AccentCyan else borderColor
 
     Box(
         modifier = modifier
-            .shadow(if (isPressed) 2.dp else 6.dp, RoundedCornerShape(14.dp))
             .clip(RoundedCornerShape(14.dp))
-            .background(bgColor)
-            .border(1.5.dp, curBorder, RoundedCornerShape(14.dp))
-            .pointerInput(label) {
+            .background(curBg)
+            .then(
+                if (borderColor != null && !isPressed) Modifier.border(1.5.dp, borderColor, RoundedCornerShape(14.dp))
+                else Modifier
+            )
+            .pointerInput(Unit) {
                 detectTapGestures(
                     onPress = {
                         isPressed = true
                         view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                         onButtonEvent("down")
-                        tryAwaitRelease()
+                        val released = tryAwaitRelease()
                         isPressed = false
+                        if (released) {
+                            view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY_RELEASE)
+                        }
                         onButtonEvent("up")
                     }
                 )
             },
         contentAlignment = Alignment.Center
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(horizontal = 6.dp)
+        ) {
             Text(
                 text = label,
                 color = curTextColor,
@@ -333,6 +342,97 @@ fun AirMouseButton(
                     fontSize = 10.sp
                 )
             }
+        }
+    }
+}
+
+/**
+ * Integrated Vertical Scroll Wheel Strip with ribbed physical styling,
+ * drag-to-scroll, and tap-to-Middle-Click.
+ */
+@Composable
+fun IntegratedScrollWheel(
+    modifier: Modifier = Modifier,
+    onScroll: (isUp: Boolean) -> Unit,
+    onMiddleClick: (state: String) -> Unit
+) {
+    val view = LocalView.current
+    var isWheelPressed by remember { mutableStateOf(false) }
+    var accumulatedDrag by remember { mutableStateOf(0f) }
+    val dragThreshold = 20f
+
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(14.dp))
+            .background(if (isWheelPressed) AccentCyan.copy(alpha = 0.25f) else BgElevated)
+            .border(1.5.dp, if (isWheelPressed) AccentCyan else BorderSubtle, RoundedCornerShape(14.dp))
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onPress = {
+                        isWheelPressed = true
+                        view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                        onMiddleClick("down")
+                        val released = tryAwaitRelease()
+                        isWheelPressed = false
+                        if (released) {
+                            view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY_RELEASE)
+                        }
+                        onMiddleClick("up")
+                    }
+                )
+            }
+            .pointerInput(Unit) {
+                detectDragGestures { change, dragAmount ->
+                    change.consume()
+                    accumulatedDrag += dragAmount.y
+                    if (accumulatedDrag <= -dragThreshold) {
+                        view.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
+                        onScroll(true) // Scroll Up
+                        accumulatedDrag = 0f
+                    } else if (accumulatedDrag >= dragThreshold) {
+                        view.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
+                        onScroll(false) // Scroll Down
+                        accumulatedDrag = 0f
+                    }
+                }
+            },
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.padding(vertical = 8.dp)
+        ) {
+            Text("▲", color = AccentCyan, fontSize = 12.sp)
+            Spacer(modifier = Modifier.height(4.dp))
+
+            // Simulated Wheel Tread
+            Column(
+                modifier = Modifier
+                    .width(28.dp)
+                    .height(36.dp)
+                    .clip(RoundedCornerShape(6.dp))
+                    .background(Color(0xFF0F0F16))
+                    .border(1.dp, BorderSubtle, RoundedCornerShape(6.dp))
+                    .padding(vertical = 4.dp),
+                verticalArrangement = Arrangement.SpaceEvenly,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                repeat(4) {
+                    Box(
+                        modifier = Modifier
+                            .width(18.dp)
+                            .height(2.5.dp)
+                            .background(if (isWheelPressed) AccentCyan else TextSecondary.copy(alpha = 0.4f))
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(4.dp))
+            Text("WHEEL", color = TextSecondary, fontSize = 9.sp, fontWeight = FontWeight.Bold)
+            Text("CLICK", color = TextSecondary.copy(alpha = 0.6f), fontSize = 8.sp)
+            Spacer(modifier = Modifier.height(2.dp))
+            Text("▼", color = AccentCyan, fontSize = 12.sp)
         }
     }
 }
@@ -361,55 +461,9 @@ fun AirMouseQuickButton(
             contentColor = textColor
         ),
         shape = RoundedCornerShape(10.dp),
-        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 6.dp)
+        border = androidx.compose.foundation.BorderStroke(1.dp, BorderSubtle),
+        contentPadding = PaddingValues(horizontal = 6.dp, vertical = 6.dp)
     ) {
         Text(text = label, fontSize = fontSize, fontWeight = FontWeight.SemiBold)
-    }
-}
-
-/**
- * Vertical Touch Scroll Wheel Strip with drag gesture detection and haptics.
- */
-@Composable
-fun ScrollWheelStrip(
-    modifier: Modifier = Modifier,
-    onScroll: (isUp: Boolean) -> Unit
-) {
-    val view = LocalView.current
-    var accumulatedDrag by remember { mutableStateOf(0f) }
-    val dragThreshold = 22f
-
-    Box(
-        modifier = modifier
-            .clip(RoundedCornerShape(14.dp))
-            .background(BgElevated)
-            .border(1.5.dp, BorderSubtle, RoundedCornerShape(14.dp))
-            .pointerInput(Unit) {
-                detectDragGestures { change, dragAmount ->
-                    change.consume()
-                    accumulatedDrag += dragAmount.y
-                    if (accumulatedDrag <= -dragThreshold) {
-                        view.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
-                        onScroll(true) // Scroll Up
-                        accumulatedDrag = 0f
-                    } else if (accumulatedDrag >= dragThreshold) {
-                        view.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
-                        onScroll(false) // Scroll Down
-                        accumulatedDrag = 0f
-                    }
-                }
-            },
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text("▲", color = AccentCyan, fontSize = 14.sp)
-            Spacer(modifier = Modifier.height(4.dp))
-            Text("SCROLL", color = TextSecondary, fontSize = 11.sp, fontWeight = FontWeight.Bold)
-            Spacer(modifier = Modifier.height(4.dp))
-            Text("▼", color = AccentCyan, fontSize = 14.sp)
-        }
     }
 }
