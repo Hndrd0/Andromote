@@ -9,6 +9,9 @@ import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -132,6 +135,7 @@ private fun PortraitLayout(onButtonEvent: (String, String) -> Unit) {
             TactileButton(
                 label = "HOME",
                 buttonId = "HOME",
+                icon = Icons.Default.Home,
                 modifier = Modifier.size(44.dp),
                 isRound = true,
                 accentColor = BgElevated,
@@ -201,6 +205,7 @@ private fun LandscapeLayout(onButtonEvent: (String, String) -> Unit) {
                 TactileButton(
                     label = "HOME",
                     buttonId = "HOME",
+                    icon = Icons.Default.Home,
                     modifier = Modifier.size(46.dp),
                     isRound = true,
                     accentColor = BgElevated,
@@ -347,6 +352,7 @@ fun TactileButton(
     isRound: Boolean = true,
     accentColor: Color? = null,
     textColor: Color? = null,
+    icon: androidx.compose.ui.graphics.vector.ImageVector? = null,
     onButtonEvent: (String, String) -> Unit
 ) {
     var isPressed by remember { mutableStateOf(false) }
@@ -382,11 +388,20 @@ fun TactileButton(
             },
         contentAlignment = Alignment.Center
     ) {
-        Text(
-            text = label,
-            color = displayTextColor,
-            fontSize = fontSize,
-            fontWeight = FontWeight.ExtraBold
-        )
+        if (icon != null) {
+            Icon(
+                imageVector = icon,
+                contentDescription = label,
+                tint = displayTextColor,
+                modifier = Modifier.size(22.dp)
+            )
+        } else {
+            Text(
+                text = label,
+                color = displayTextColor,
+                fontSize = fontSize,
+                fontWeight = FontWeight.ExtraBold
+            )
+        }
     }
 }

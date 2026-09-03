@@ -193,8 +193,8 @@ class UDPMotionServer:
                 euler_pitch_deg=pitch_deg
             )
 
-        # Inject relative mouse motion if pointing on-screen
-        if not is_off_screen and self.input_controller.enabled and (dx != 0 or dy != 0):
+        # Inject relative mouse motion
+        if self.input_controller.enabled and (dx != 0 or dy != 0):
             self.input_controller.move_cursor_relative(dx, dy)
 
         # Feed DSU server if available
