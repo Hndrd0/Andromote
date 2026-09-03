@@ -274,7 +274,7 @@ class SettingsDialog(QDialog):
         layout.setSpacing(14)
 
         # Header Title
-        title = QLabel("⚙️ Application Settings")
+        title = QLabel("Application Settings")
         title.setStyleSheet("font-size: 18px; font-weight: 800; color: #5AE7FF; letter-spacing: -0.02em;")
         layout.addWidget(title)
 
@@ -298,7 +298,7 @@ class SettingsDialog(QDialog):
         self.chk_verbose.toggled.connect(self._on_verbose_toggled)
         vbox_term.addWidget(self.chk_verbose)
 
-        btn_open_viewer = QPushButton("📋 Open Live Log Terminal")
+        btn_open_viewer = QPushButton("Open Live Log Terminal")
         btn_open_viewer.setStyleSheet("background-color: #1A1A24; color: #5AE7FF; border: 1px solid rgba(90, 231, 255, 0.3); padding: 6px 14px; font-weight: 600; border-radius: 6px;")
         btn_open_viewer.clicked.connect(self._open_log_viewer)
         vbox_term.addWidget(btn_open_viewer)

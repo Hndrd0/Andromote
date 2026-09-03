@@ -102,7 +102,7 @@ fun ControllerScreen(
                         contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
                     ) {
                         Text(
-                            text = if (isMotionActive) "🖱️ Motion: ON" else "⏸️ Motion: OFF",
+                            text = if (isMotionActive) "Motion: ON" else "Motion: OFF",
                             fontSize = 11.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -118,15 +118,23 @@ fun ControllerScreen(
                     shape = RoundedCornerShape(8.dp),
                     contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
                 ) {
-                    Text("🎯 Recenter", fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                    Text("Recenter", fontSize = 11.sp, fontWeight = FontWeight.Bold)
                 }
 
                 IconButton(onClick = onNavigateToConnection) {
-                    Text("📶", fontSize = 18.sp)
+                    Icon(
+                        imageVector = Icons.Default.Share,
+                        contentDescription = "Wi-Fi Connection",
+                        tint = AccentCyan
+                    )
                 }
 
                 IconButton(onClick = onNavigateToCalibration) {
-                    Text("⚙️", fontSize = 18.sp)
+                    Icon(
+                        imageVector = Icons.Default.Settings,
+                        contentDescription = "Settings",
+                        tint = TextSecondary
+                    )
                 }
             }
         }
@@ -153,7 +161,7 @@ fun ControllerScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "🪄 Wii Remote",
+                    text = "Wii Remote",
                     color = if (activeMode == ControllerMode.WII_REMOTE) BgPrimary else TextSecondary,
                     fontWeight = FontWeight.Bold,
                     fontSize = 13.sp
@@ -171,7 +179,7 @@ fun ControllerScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "🖱️ Air Mouse",
+                    text = "Air Mouse",
                     color = if (activeMode == ControllerMode.AIR_MOUSE) BgPrimary else TextSecondary,
                     fontWeight = FontWeight.Bold,
                     fontSize = 13.sp

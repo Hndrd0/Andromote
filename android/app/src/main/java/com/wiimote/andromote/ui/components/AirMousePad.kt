@@ -108,7 +108,7 @@ fun AirMousePad(
             ) {
                 // Double Click Button
                 AirMouseQuickButton(
-                    label = "⚡ Double Click",
+                    label = "Double Click",
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f),
@@ -151,7 +151,7 @@ fun AirMousePad(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "📊 Presentation Tools",
+                        text = "Presentation Tools",
                         color = AccentCyan,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold
@@ -201,7 +201,7 @@ fun AirMousePad(
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             AirMouseQuickButton(
-                                label = "▶ Start (F5)",
+                                label = "Start (F5)",
                                 modifier = Modifier.weight(1f),
                                 fontSize = 11.sp,
                                 onClick = {
@@ -210,7 +210,7 @@ fun AirMousePad(
                                 }
                             )
                             AirMouseQuickButton(
-                                label = "✕ Exit (Esc)",
+                                label = "Exit (Esc)",
                                 modifier = Modifier.weight(1f),
                                 fontSize = 11.sp,
                                 onClick = {
@@ -219,8 +219,8 @@ fun AirMousePad(
                                 }
                             )
                             AirMouseQuickButton(
-                                label = "⬛ Blank",
-                                modifier = Modifier.weight(0.8f),
+                                label = "Blank Screen",
+                                modifier = Modifier.weight(1f),
                                 fontSize = 11.sp,
                                 onClick = {
                                     onButtonEvent("KEY_B", "down")
@@ -253,7 +253,7 @@ fun AirMousePad(
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text(
-                    text = if (isMotionFrozen) "⏸️ Motion Paused" else "🖐️ Freeze Pointer",
+                    text = if (isMotionFrozen) "Motion Paused" else "Freeze Pointer",
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -271,7 +271,7 @@ fun AirMousePad(
                 ),
                 shape = RoundedCornerShape(12.dp)
             ) {
-                Text("🎯 Recenter", fontSize = 13.sp, fontWeight = FontWeight.Bold)
+                Text("Recenter", fontSize = 13.sp, fontWeight = FontWeight.Bold)
             }
         }
     }

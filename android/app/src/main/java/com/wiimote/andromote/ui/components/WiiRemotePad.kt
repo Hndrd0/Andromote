@@ -130,7 +130,7 @@ private fun PortraitLayout(onButtonEvent: (String, String) -> Unit) {
         ) {
             TactileButton(label = "—", buttonId = "MINUS", modifier = Modifier.size(40.dp), isRound = true, onButtonEvent = onButtonEvent)
             TactileButton(
-                label = "🏠",
+                label = "HOME",
                 buttonId = "HOME",
                 modifier = Modifier.size(44.dp),
                 isRound = true,
@@ -199,7 +199,7 @@ private fun LandscapeLayout(onButtonEvent: (String, String) -> Unit) {
             ) {
                 TactileButton(label = "—", buttonId = "MINUS", modifier = Modifier.size(40.dp), isRound = true, onButtonEvent = onButtonEvent)
                 TactileButton(
-                    label = "🏠",
+                    label = "HOME",
                     buttonId = "HOME",
                     modifier = Modifier.size(46.dp),
                     isRound = true,

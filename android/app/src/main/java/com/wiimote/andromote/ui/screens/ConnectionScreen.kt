@@ -118,7 +118,11 @@ fun ConnectionScreen(
             )
 
             IconButton(onClick = onScan, enabled = !isScanning) {
-                Text("🔄", fontSize = 16.sp)
+                Icon(
+                    imageVector = androidx.compose.material.icons.Icons.Default.Refresh,
+                    contentDescription = "Scan for PCs",
+                    tint = AccentCyan
+                )
             }
         }
 
@@ -170,7 +174,11 @@ fun ConnectionScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text("💻", fontSize = 20.sp)
+                                Icon(
+                                    imageVector = androidx.compose.material.icons.Icons.Default.Share,
+                                    contentDescription = "PC Node",
+                                    tint = AccentCyan
+                                )
                                 Spacer(modifier = Modifier.width(10.dp))
                                 Column {
                                     Text(text = srv.hostname, color = TextPrimary, fontWeight = FontWeight.Bold)

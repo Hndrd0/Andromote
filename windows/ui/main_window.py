@@ -127,7 +127,7 @@ class MainWindow(QMainWindow):
         header_layout.addWidget(self.lbl_status_badge)
 
         # Settings Button
-        self.btn_settings = QPushButton("⚙️ Settings")
+        self.btn_settings = QPushButton("Settings")
         self.btn_settings.setStyleSheet("background-color: #1A1A24; color: #F5F5F7; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 6px; padding: 6px 14px; font-weight: 600;")
         self.btn_settings.clicked.connect(self._open_settings_dialog)
         header_layout.addWidget(self.btn_settings)
@@ -225,12 +225,12 @@ class MainWindow(QMainWindow):
         # Quick Control Actions
         action_layout = QHBoxLayout()
 
-        btn_recenter = QPushButton("🎯 Recenter Neutral Orientation (Home)")
+        btn_recenter = QPushButton("Recenter Neutral Orientation (Home)")
         btn_recenter.setObjectName("RecenterButton")
         btn_recenter.clicked.connect(self._on_recenter_clicked)
         action_layout.addWidget(btn_recenter)
 
-        btn_emergency = QPushButton("🛑 Emergency Release Inputs")
+        btn_emergency = QPushButton("Emergency Release Inputs")
         btn_emergency.setObjectName("EmergencyButton")
         btn_emergency.clicked.connect(self._on_emergency_release)
         action_layout.addWidget(btn_emergency)
@@ -256,7 +256,7 @@ class MainWindow(QMainWindow):
         self.lbl_pin_display.setAlignment(Qt.AlignCenter)
         pin_layout.addWidget(self.lbl_pin_display)
 
-        btn_refresh_pin = QPushButton("🔄 Generate New PIN")
+        btn_refresh_pin = QPushButton("Generate New PIN")
         btn_refresh_pin.clicked.connect(self._on_refresh_pin)
         pin_layout.addWidget(btn_refresh_pin, alignment=Qt.AlignCenter)
 
@@ -296,15 +296,15 @@ class MainWindow(QMainWindow):
         lbl_preset.setStyleSheet("font-weight: bold; color: #5AE7FF;")
         preset_box.addWidget(lbl_preset)
 
-        btn_preset_wii = QPushButton("🪄 Wii Remote")
+        btn_preset_wii = QPushButton("Wii Remote")
         btn_preset_wii.clicked.connect(lambda: self._apply_tuning_preset(18.0, 18.0, 0.04, 0.30, 0.50))
         preset_box.addWidget(btn_preset_wii)
 
-        btn_preset_mouse = QPushButton("🖱️ Air Mouse")
+        btn_preset_mouse = QPushButton("Air Mouse")
         btn_preset_mouse.clicked.connect(lambda: self._apply_tuning_preset(24.0, 24.0, 0.02, 0.35, 0.65))
         preset_box.addWidget(btn_preset_mouse)
 
-        btn_preset_pres = QPushButton("📊 Presentation")
+        btn_preset_pres = QPushButton("Presentation")
         btn_preset_pres.clicked.connect(lambda: self._apply_tuning_preset(15.0, 15.0, 0.05, 0.55, 0.30))
         preset_box.addWidget(btn_preset_pres)
 
@@ -432,7 +432,7 @@ class MainWindow(QMainWindow):
         layout.setSpacing(10)
 
         # 1. Direct Motion Gestures
-        grp_direct = QGroupBox("⚡ Direct Motion Gestures (Wii Physical Actions)")
+        grp_direct = QGroupBox("Direct Motion Gestures (Wii Physical Actions)")
         grid_d = QGridLayout(grp_direct)
 
         # Shake
@@ -477,7 +477,7 @@ class MainWindow(QMainWindow):
         layout.addWidget(grp_direct)
 
         # 2. Screen-Based Pointer Gestures
-        grp_pointer = QGroupBox("💥 Screen-Based Pointer Gestures")
+        grp_pointer = QGroupBox("Screen-Based Pointer Gestures")
         grid_p = QGridLayout(grp_pointer)
 
         # Off-Screen Reload
@@ -496,7 +496,7 @@ class MainWindow(QMainWindow):
         layout.addWidget(grp_pointer)
 
         # 3. Physical Orientation Gestures
-        grp_orient = QGroupBox("🔄 Physical Orientation & Steering Gestures")
+        grp_orient = QGroupBox("Physical Orientation & Steering Gestures")
         grid_o = QGridLayout(grp_orient)
 
         # Tilt Steering
@@ -620,7 +620,7 @@ class MainWindow(QMainWindow):
         act_toggle.triggered.connect(self._toggle_master_controller)
         tray_menu.addAction(act_toggle)
 
-        act_settings = QAction("⚙️ Settings", self)
+        act_settings = QAction("Settings", self)
         act_settings.triggered.connect(self._open_settings_dialog)
         tray_menu.addAction(act_settings)
 
