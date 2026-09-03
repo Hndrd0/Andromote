@@ -3,36 +3,127 @@
 <div align="center">
 
 [![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Android-0078D6.svg?logo=windows&logoColor=white)](#)
-[![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Kotlin](https://img.shields.io/badge/Kotlin-Jetpack%20Compose-7F52FF.svg?logo=kotlin&logoColor=white)](https://kotlinlang.org/)
-[![Dolphin](https://img.shields.io/badge/Dolphin-DSU%20%2F%20Cemuhook-009688.svg?logo=dolphin&logoColor=white)](https://dolphin-emu.org/)
+[![Release](https://img.shields.io/github/v/release/Hndrd0/Andromote?color=success&label=Latest%20Release)](https://github.com/Hndrd0/Andromote/releases)
 [![Build & Release](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF.svg?logo=github-actions&logoColor=white)](https://github.com/Hndrd0/Andromote/actions)
+[![Dolphin](https://img.shields.io/badge/Dolphin-DSU%20%2F%20Cemuhook-009688.svg?logo=dolphin&logoColor=white)](https://dolphin-emu.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 **Turn any Android smartphone into an authentic, ultra-low-latency Nintendo Wii Remote, motion air-mouse, and retro NES gamepad for Windows PCs and the Dolphin Emulator.**
 
-[Features](#-key-features) • [Architecture](#-system-architecture) • [Quick Start](#-quick-start) • [Dolphin Setup](#-dolphin-emulator-setup) • [Gestures](#-wii-motion-gestures) • [Downloads](https://github.com/Hndrd0/Andromote/releases)
+[🚀 Quick Start](#-quick-start) • [🎮 Controls](#-controls--how-to-use) • [⚡ Gestures](#-wii-motion-gestures) • [🐬 Dolphin Setup](#-dolphin-emulator-setup) • [🏗️ Technical Architecture](#-system-architecture--technical-details)
+
+[⬇️ Download Latest Release (EXE & APK)](https://github.com/Hndrd0/Andromote/releases)
 
 </div>
 
 ---
 
-## 🌟 Key Features
+## 🚀 Quick Start
 
-| Feature | Description |
-| :--- | :--- |
-| 🎮 **Wii Remote Wand UI** | Tactile Jetpack Compose interface with D-Pad, oversized A button, underside B trigger, `—`, `+`, `🏠` Home, `1`, `2`, and player LED indicators. |
-| 🕹️ **Auto-Rotating NES Mode** | Turn phone sideways to switch into an ergonomic retro NES gamepad. Powered by **hardware-gravity sensing** that works even with system auto-rotate lock ON! |
-| 🎯 **1€ Adaptive Filter** | Fused 3D quaternion raycasting with a **One-Euro (1€) filter** eliminates hand micro-tremors while providing zero-lag response during rapid sweeps. |
-| ⚡ **Wii Physical Gestures** | Detects Rapid Shaking, Wrist Snapping, Straight Thrusts, Wii Wheel Tilt Steering, Off-Screen Reloading, and Key Twisting in real time. |
-| 🐬 **Native Dolphin DSU Server** | Embedded Cemuhook / DSU server on UDP `26760` with exact 100-byte packet alignment for authentic motion controls in *Mario Galaxy*, *Skyward Sword*, etc. |
-| 💥 **Off-Screen Aim & Reload** | Aiming away from your monitor ($>32^\circ$) freezes cursor wandering and triggers instant weapon reload (`KEY_R` / Right-Click). |
-| 📶 **Zero-Config LAN Setup** | UDP broadcast auto-discovery (`42424`) connects instantly over Wi-Fi without typing IP addresses, secured with 4-digit PIN authentication (`42425`). |
-| 🛡️ **Failsafe Watchdog** | Native Windows `SendInput` dispatcher with an automatic watchdog timer that releases held buttons if Wi-Fi drops. |
+Get up and running in less than 2 minutes:
+
+### 1. Download the Apps
+Head to the **[Latest Releases](https://github.com/Hndrd0/Andromote/releases)** and grab:
+* **`Andromote.exe`** for your Windows PC.
+* **`Andromote.apk`** for your Android phone.
+
+### 2. Launch PC Receiver
+Double-click **`Andromote.exe`** on your PC. It will display a **4-digit PIN** (e.g., `4812`).
+
+### 3. Open Phone App & Connect
+1. Open **Andromote** on your phone (make sure both PC and phone are on the same Wi-Fi).
+2. The phone will auto-discover your PC. Tap your PC's name in the list.
+3. Enter the 4-digit PIN shown on your PC screen.
+4. **Done!** Aim your phone at your monitor to move the cursor!
 
 ---
 
-## 🏗️ System Architecture
+## 🎮 Controls & How to Use
+
+### Wii Remote Wand Mode (Held Vertically)
+* **Aiming:** Point the top of your phone at the monitor and move it naturally in the air.
+* **A Button:** Left-Click on Windows / Action in Dolphin.
+* **B Button (Underside Trigger):** Right-Click on Windows / Trigger in Dolphin.
+* **Volume Keys:** The phone's physical **Volume Down** button also acts as the B trigger for a tactile grip!
+* **D-Pad (▲ ▼ ◀ ▶):** Arrow keys for navigation / D-Pad in games.
+* **+ and — Buttons:** Options & Select / Menu controls.
+* **1 and 2 Buttons:** Game actions / Secondary triggers.
+* **🏠 Recenter:** Hold your phone in a comfortable resting position and tap **Home** (or the on-screen **🎯 Recenter** button) to immediately re-zero the cursor center without jumping.
+
+---
+
+## 🕹️ Auto-Rotating NES Gamepad Mode
+
+Turn your phone 90° sideways to play retro games or 2D platformers!
+
+* **Automatic Layout Flip:** The screen instantly rearranges into an ergonomic classic NES layout:
+  * **Left Thumb:** D-Pad directional controls.
+  * **Right Thumb:** A, 1, 2 action buttons.
+  * **Top/Shoulder:** B trigger.
+* **Force Gravity Detection:** The app detects orientation using raw physical accelerometer gravity. **It rotates automatically even if your phone's system auto-rotate lock is enabled!**
+
+---
+
+## ⚡ Wii Motion Gestures
+
+Andromote includes a real-time motion gesture engine that recognizes classic Wii Remote physical actions. You can customize what keys each gesture triggers in the receiver's **Wii Gestures** tab:
+
+| Gesture | Real-World Motion | In-Game Action / Default Key |
+| :--- | :--- | :--- |
+| **⚡ Rapid Shaking** | Shake phone quickly back and forth | Spin attack / Shake off (`KEY_SPACE`) |
+| **🎣 Wrist Snapping** | Sharp upward flick of the wrist | Cast fishing line / Jump (`KEY_UP`) |
+| **🥊 Straight Thrust** | Punch / thrust phone straight forward | Jab / Sword lunge (`KEY_F`) |
+| **🏎️ Tilt Steering** | Lean horizontal phone like a steering wheel | Steer Left / Right (`KEY_A` / `KEY_D`) |
+| **💥 Off-Screen Reload** | Aim phone away from the monitor ($>32^\circ$) | Reload weapon (`KEY_R` / Right-Click) |
+| **🔑 Key Twisting** | Fast wrist roll / tilt | Peek / Roll sideways (`KEY_Q` / `KEY_E`) |
+
+> [!TIP]
+> In the Windows app, open the **Wii Gestures** tab to watch live glowing green HUD indicator badges light up whenever you perform a gesture!
+
+---
+
+## 🐬 Dolphin Emulator Setup
+
+Andromote features an integrated **Cemuhook / DSU motion server** running on UDP port `26760`. It streams calibrated 6-DOF gyroscope and accelerometer telemetry directly into Dolphin.
+
+### Step-by-Step Setup:
+1. Open **Dolphin Emulator** → click **Controllers**.
+2. Under **Wii Remotes**, set **Wii Remote 1** to **Emulated Wii Remote** → click **Configure**.
+3. Under **Motion Input**, check **Alternate Input Sources** (DSU Client):
+   * **Server Address:** `127.0.0.1`
+   * **Port:** `26760`
+4. At the top of the Configure window, set **Device** to: `DSUClient/0/...`
+5. **Map Your Buttons:**
+   Click each button field in Dolphin and press the button on your phone (or right-click and type the identifier directly):
+
+| Wii Remote Function | Phone Button | Dolphin Detected ID | Direct String |
+| :--- | :--- | :--- | :--- |
+| **Home** | 🏠 Home | **`PS`** | `PS` |
+| **A** | A Button | **`Cross`** | `Cross` |
+| **B (Trigger)** | B Trigger | **`R2`** | `R2` |
+| **1** | 1 Button | **`Square`** | `Square` |
+| **2** | 2 Button | **`Circle`** | `Circle` |
+| **+ (Plus)** | + Button | **`Options`** | `Options` |
+| **— (Minus)** | — Button | **`Share`** | `Share` |
+| **D-Pad Up** | ▲ Up | **`Pad N`** | `Pad N` |
+| **D-Pad Down** | ▼ Down | **`Pad S`** | `Pad S` |
+| **D-Pad Left** | ◀ Left | **`Pad W`** | `Pad W` |
+| **D-Pad Right** | ▶ Right | **`Pad E`** | `Pad E` |
+
+> [!NOTE]
+> You can also copy the pre-configured profile [`dolphin_profiles/WiimoteNew.ini`](dolphin_profiles/WiimoteNew.ini) into your Dolphin profiles folder (`%APPDATA%\Dolphin Emulator\Config\Profiles\Wiimote\`) and click **Load** in Dolphin!
+
+---
+
+<br/>
+
+# 🏗️ System Architecture & Technical Details
+
+*The section below is intended for developers, technical users, and anyone interested in the inner workings of Andromote.*
+
+---
+
+### High-Level Architecture
 
 ```mermaid
 flowchart TD
@@ -79,7 +170,7 @@ flowchart TD
 
 ---
 
-## 🔄 Connection & Motion Pipeline
+### Connection & Motion Handshake Pipeline
 
 ```mermaid
 sequenceDiagram
@@ -113,9 +204,7 @@ sequenceDiagram
 
 ---
 
-## 🕹️ Dual-Layout State Machine
-
-The phone automatically transitions between layouts based on real physical gravity:
+### Physical Orientation State Machine
 
 ```mermaid
 stateDiagram-v2
@@ -135,93 +224,22 @@ stateDiagram-v2
     HorizontalNES --> VerticalWand: Phone held upright (|ay| > 5.5 m/s²)
 ```
 
-> [!NOTE]
-> This orientation engine relies directly on raw gravity vector math rather than Android OS window rotation events. It flips instantly even when Android's system-wide auto-rotate lock is enabled!
-
----
-
-## ⚡ Wii Motion Gestures
-
-In the Windows receiver, open the **Wii Gestures** tab to toggle each gesture, assign custom keybinds, and view live glowing green HUD badges:
-
-| Gesture | Real-World Motion | In-Game Action / Default Key |
-| :--- | :--- | :--- |
-| **⚡ Rapid Shaking** | Shake phone quickly back and forth | Spin attack / Shake off (`KEY_SPACE`) |
-| **🎣 Wrist Snapping** | Sharp upward flick of the wrist | Cast fishing line / Jump (`KEY_UP`) |
-| **🥊 Straight Thrust** | Punch / thrust phone straight forward | Jab / Sword lunge (`KEY_F`) |
-| **🏎️ Tilt Steering** | Lean horizontal phone like a steering wheel | Steer Left / Right (`KEY_A` / `KEY_D`) |
-| **💥 Off-Screen Reload** | Aim phone away from the monitor ($>32^\circ$) | Reload weapon (`KEY_R` / Right-Click) |
-| **🔑 Key Twisting** | Fast wrist roll / tilt | Peek / Roll sideways (`KEY_Q` / `KEY_E`) |
-
----
-
-## 🐬 Dolphin Emulator Setup
-
-Andromote embeds a native **Cemuhook DSU server** on UDP port `26760`.
-
-### Step-by-Step Configuration:
-1. Open **Dolphin Emulator** → click **Controllers**.
-2. Under **Wii Remotes**, set **Wii Remote 1** to **Emulated Wii Remote** → click **Configure**.
-3. Under **Motion Input**, check **Alternate Input Sources** (DSU Client):
-   * **Server Address:** `127.0.0.1`
-   * **Port:** `26760`
-4. At the top of the Configure window, set **Device** to: `DSUClient/0/...`
-5. **Button Mapping Table:**
-   Click each button field in Dolphin and press the corresponding button on your phone (or right-click and type the string directly):
-
-| Wii Remote Function | Phone Button | Dolphin Detected ID | Direct String |
-| :--- | :--- | :--- | :--- |
-| **Home** | 🏠 Home | **`PS`** | `PS` |
-| **A** | A Button | **`Cross`** | `Cross` |
-| **B (Trigger)** | B Trigger | **`R2`** | `R2` |
-| **1** | 1 Button | **`Square`** | `Square` |
-| **2** | 2 Button | **`Circle`** | `Circle` |
-| **+ (Plus)** | + Button | **`Options`** | `Options` |
-| **— (Minus)** | — Button | **`Share`** | `Share` |
-| **D-Pad Up** | ▲ Up | **`Pad N`** | `Pad N` |
-| **D-Pad Down** | ▼ Down | **`Pad S`** | `Pad S` |
-| **D-Pad Left** | ◀ Left | **`Pad W`** | `Pad W` |
-| **D-Pad Right** | ▶ Right | **`Pad E`** | `Pad E` |
-
-> [!TIP]
-> You can also load the pre-made profile [dolphin_profiles/WiimoteNew.ini](dolphin_profiles/WiimoteNew.ini) directly in Dolphin via **Profile → Load**!
-
----
-
-## 🚀 Quick Start
-
-### 1. Download & Launch Windows Receiver
-Download `Andromote.exe` from the [Latest Releases](https://github.com/Hndrd0/Andromote/releases) and launch it.
-Take note of the **4-digit PIN** displayed on the dashboard.
-
-### 2. Install Android App
-Download `Andromote.apk` from [Releases](https://github.com/Hndrd0/Andromote/releases) to your phone and install:
-```cmd
-adb install -r Andromote.apk
-```
-
-### 3. Connect & Play
-1. The app automatically scans and discovers your PC over Wi-Fi. Tap your PC name.
-2. Enter the 4-digit PIN displayed on your PC.
-3. Aim your phone at the screen like a Wii Remote to control the cursor!
-4. Tap **A** to left-click, **B** to right-click, or tap **🎯 Recenter** at any time to re-zero your reference center.
-
 ---
 
 <details>
-<summary><b>📐 Technical Deep-Dive: 1€ Filter & Motion Math</b></summary>
+<summary><b>📐 Mathematics: 1€ (One-Euro) Adaptive Filter</b></summary>
 
-### 1€ (One-Euro) Filter
-Traditional Exponential Moving Average (EMA) filters introduce lag during fast motions when smoothing jitter at rest. Andromote implements the **Casiez et al. 1€ Filter** with adaptive cutoff frequency:
+### 1€ Filter Formulation
+Standard Exponential Moving Average (EMA) filters cause perceptible latency during rapid gestures when smoothed enough to stop resting jitter. Andromote implements the **1€ Filter (Casiez et al.)**, adjusting cutoff frequency dynamically based on hand speed:
 
 $$\hat{x}_i = \alpha x_i + (1 - \alpha) \hat{x}_{i-1} \quad \text{where} \quad \alpha = \frac{1}{1 + \frac{\tau}{\Delta t}}, \quad \tau = \frac{1}{2\pi f_c}$$
 
-The cutoff frequency $f_c$ scales dynamically with the derivative of speed:
+Cutoff frequency $f_c$ scales dynamically:
 
 $$f_c = f_{c,\min} + \beta \cdot |\dot{x}|$$
 
-* **Low Speed ($|\dot{x}| \approx 0$):** $f_c$ drops to $f_{c,\min} = 1.0\text{ Hz}$, delivering a rock-solid cursor with zero hand trembling.
-* **High Speed ($|\dot{x}| \gg 0$):** $f_c$ scales up proportionally via $\beta = 0.05$, yielding immediate responsiveness for sweeps, flicks, and FPS aiming.
+* **Rest / Slow Aiming ($|\dot{x}| \approx 0$):** $f_c = 1.0\text{ Hz}$, eliminating micro-tremors for pixel-precise targeting.
+* **Rapid Flicks ($|\dot{x}| \gg 0$):** $f_c$ scales up automatically via $\beta = 0.05$, yielding zero input lag during fast sweeps.
 
 </details>
 
@@ -277,4 +295,4 @@ Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for more details
 
 ## 🤝 Contributing
 
-Contributions, bug reports, and suggestions are warmly welcomed! Please read [`CONTRIBUTING.md`](CONTRIBUTING.md) to get started.
+Contributions, bug reports, and feature suggestions are warmly welcomed! Please read [`CONTRIBUTING.md`](CONTRIBUTING.md) to get started.
