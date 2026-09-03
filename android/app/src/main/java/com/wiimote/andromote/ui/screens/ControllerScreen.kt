@@ -34,16 +34,20 @@ enum class ControllerMode {
 fun ControllerScreen(
     connectionState: ConnectionState,
     isLandscape: Boolean = false,
+    activeMode: ControllerMode = ControllerMode.WII_REMOTE,
+    onModeChanged: (ControllerMode) -> Unit = {},
     isMotionActive: Boolean = true,
+    isTouchpadFrozen: Boolean = false,
     onToggleMotion: () -> Unit = {},
+    onToggleTouchpadFreeze: () -> Unit = {},
     onButtonEvent: (button: String, state: String) -> Unit,
+    onTouchMove: (dx: Float, dy: Float) -> Unit = { _, _ -> },
     onRecenter: () -> Unit,
     onNavigateToConnection: () -> Unit,
     onNavigateToCalibration: () -> Unit
 ) {
     val configuration = LocalConfiguration.current
     val effectiveLandscape = isLandscape || (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE)
-    var activeMode by remember { mutableStateOf(ControllerMode.WII_REMOTE) }
 
     Column(
         modifier = Modifier
@@ -94,7 +98,7 @@ fun ControllerScreen(
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                if (connectionState.isConnected) {
+                if (connectionState.isConnected && activeMode == ControllerMode.WII_REMOTE) {
                     Button(
                         onClick = onToggleMotion,
                         colors = ButtonDefaults.buttonColors(
@@ -159,7 +163,7 @@ fun ControllerScreen(
                     .weight(1f)
                     .clip(RoundedCornerShape(8.dp))
                     .background(if (activeMode == ControllerMode.WII_REMOTE) AccentCyan else Color.Transparent)
-                    .clickable { activeMode = ControllerMode.WII_REMOTE }
+                    .clickable { onModeChanged(ControllerMode.WII_REMOTE) }
                     .padding(vertical = 8.dp),
                 contentAlignment = Alignment.Center
             ) {
@@ -177,7 +181,7 @@ fun ControllerScreen(
                     .weight(1f)
                     .clip(RoundedCornerShape(8.dp))
                     .background(if (activeMode == ControllerMode.AIR_MOUSE) AccentCyan else Color.Transparent)
-                    .clickable { activeMode = ControllerMode.AIR_MOUSE }
+                    .clickable { onModeChanged(ControllerMode.AIR_MOUSE) }
                     .padding(vertical = 8.dp),
                 contentAlignment = Alignment.Center
             ) {
@@ -206,10 +210,11 @@ fun ControllerScreen(
                 }
                 ControllerMode.AIR_MOUSE -> {
                     AirMousePad(
-                        isMotionFrozen = !isMotionActive,
-                        onToggleFreeze = onToggleMotion,
+                        isMotionFrozen = isTouchpadFrozen,
+                        onToggleFreeze = onToggleTouchpadFreeze,
                         onButtonEvent = onButtonEvent,
-                        onRecenter = onRecenter
+                        onRecenter = onRecenter,
+                        onTouchMove = onTouchMove
                     )
                 }
             }

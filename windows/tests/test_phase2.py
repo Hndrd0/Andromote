@@ -166,6 +166,43 @@ class TestNetworkIntegration(unittest.TestCase):
         telem = self.proc.get_telemetry()
         self.assertGreaterEqual(telem["packets"], 1)
 
+    def test_tcp_touchpad_move(self):
+        client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client.connect(('127.0.0.1', self.tcp_port))
+
+        pin = self.pairing.get_current_pin()
+        self._send_tcp_frame(client, {
+            "type": "pair",
+            "pin": pin,
+            "device_id": "phone-touch",
+            "device_name": "Test Phone"
+        })
+        self._recv_tcp_frame(client)
+
+        # Clear action log
+        self.input_ctrl._action_log.clear()
+
+        # Send small subpixel movements: 0.6 + 0.6 -> accumulates to 1.2 -> outputs 1
+        self._send_tcp_frame(client, {
+            "type": "touchpad_move",
+            "dx": 0.6,
+            "dy": 0.4
+        })
+        time.sleep(0.05)
+        self.assertEqual(len(self.input_ctrl._action_log), 0)
+
+        # Second frame: dx=0.6, dy=0.8 -> accumulated dx=1.2, dy=1.2 -> outputs dx=1, dy=1!
+        self._send_tcp_frame(client, {
+            "type": "touchpad_move",
+            "dx": 0.6,
+            "dy": 0.8
+        })
+        time.sleep(0.05)
+        self.assertEqual(len(self.input_ctrl._action_log), 1)
+        self.assertEqual(self.input_ctrl._action_log[0], ("move", 1, 1))
+
+        client.close()
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -146,6 +146,20 @@ class NetworkClient(private val context: Context) {
         }
     }
 
+    fun sendTouchpadMove(dx: Float, dy: Float) {
+        if (!_connectionState.value.isConnected) return
+        clientScope.launch {
+            sendTcpMessage(ProtocolPackets.createTouchpadMove(dx, dy))
+        }
+    }
+
+    fun sendTouchpadTap(fingers: Int = 1) {
+        if (!_connectionState.value.isConnected) return
+        clientScope.launch {
+            sendTcpMessage(ProtocolPackets.createTouchpadTap(fingers))
+        }
+    }
+
     fun sendMotion(qx: Float, qy: Float, qz: Float, qw: Float,
                    gx: Float, gy: Float, gz: Float,
                    ax: Float, ay: Float, az: Float,

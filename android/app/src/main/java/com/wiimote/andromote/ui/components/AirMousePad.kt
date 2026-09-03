@@ -159,7 +159,9 @@ fun AirMousePad(
                                     1 -> 1.4f
                                     else -> 2.2f
                                 }
-                                onTouchMove?.invoke(dragAmount.x * scale, dragAmount.y * scale)
+                                if (!isMotionFrozen) {
+                                    onTouchMove?.invoke(dragAmount.x * scale, dragAmount.y * scale)
+                                }
                             }
                         )
                     },

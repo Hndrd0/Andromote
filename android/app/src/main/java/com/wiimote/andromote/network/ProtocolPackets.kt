@@ -85,4 +85,19 @@ object ProtocolPackets {
             put("last_rtt", lastRttMs)
         }.toString()
     }
+
+    fun createTouchpadMove(dx: Float, dy: Float): String {
+        return JSONObject().apply {
+            put("type", "touchpad_move")
+            put("dx", dx.toDouble())
+            put("dy", dy.toDouble())
+        }.toString()
+    }
+
+    fun createTouchpadTap(fingers: Int): String {
+        return JSONObject().apply {
+            put("type", "touchpad_tap")
+            put("fingers", fingers)
+        }.toString()
+    }
 }

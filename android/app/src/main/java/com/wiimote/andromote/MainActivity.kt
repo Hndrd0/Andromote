@@ -19,6 +19,7 @@ import com.wiimote.andromote.network.NetworkClient
 import com.wiimote.andromote.sensors.MotionSensorManager
 import com.wiimote.andromote.ui.screens.CalibrationScreen
 import com.wiimote.andromote.ui.screens.ConnectionScreen
+import com.wiimote.andromote.ui.screens.ControllerMode
 import com.wiimote.andromote.ui.screens.ControllerScreen
 import com.wiimote.andromote.ui.theme.AndromoteTheme
 import kotlinx.coroutines.launch
@@ -37,9 +38,11 @@ class MainActivity : ComponentActivity() {
 
     private var currentTelemetry by mutableStateOf(MotionTelemetry())
     private var currentScreen by mutableStateOf(AppScreen.CONTROLLER)
+    private var activeControllerMode by mutableStateOf(ControllerMode.WII_REMOTE)
     private var discoveredServers by mutableStateOf<List<DiscoveredServer>>(emptyList())
     private var isScanning by mutableStateOf(false)
-    private var isMotionActive by mutableStateOf(true)
+    private var isWiiMotionActive by mutableStateOf(true)
+    private var isTouchpadFrozen by mutableStateOf(false)
     private var isPhysicalLandscape by mutableStateOf(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,9 +86,10 @@ class MainActivity : ComponentActivity() {
                     val connState by networkClient.connectionState.collectAsState()
 
                     // Start or stop sensors based on connection state
-                    LaunchedEffect(connState.isConnected) {
+                    LaunchedEffect(connState.isConnected, activeControllerMode, isWiiMotionActive) {
                         if (connState.isConnected) {
-                            motionSensorManager.isMotionActive = isMotionActive
+                            val shouldStream = (activeControllerMode == ControllerMode.WII_REMOTE) && isWiiMotionActive
+                            motionSensorManager.isMotionActive = shouldStream
                             motionSensorManager.start()
                         } else {
                             motionSensorManager.stop()
@@ -97,13 +101,26 @@ class MainActivity : ComponentActivity() {
                             ControllerScreen(
                                 connectionState = connState,
                                 isLandscape = isPhysicalLandscape,
-                                isMotionActive = isMotionActive,
+                                activeMode = activeControllerMode,
+                                onModeChanged = { mode ->
+                                    activeControllerMode = mode
+                                    val shouldStream = (mode == ControllerMode.WII_REMOTE) && isWiiMotionActive
+                                    motionSensorManager.isMotionActive = shouldStream
+                                },
+                                isMotionActive = isWiiMotionActive,
+                                isTouchpadFrozen = isTouchpadFrozen,
                                 onToggleMotion = {
-                                    isMotionActive = !isMotionActive
-                                    motionSensorManager.isMotionActive = isMotionActive
+                                    isWiiMotionActive = !isWiiMotionActive
+                                    motionSensorManager.isMotionActive = isWiiMotionActive
+                                },
+                                onToggleTouchpadFreeze = {
+                                    isTouchpadFrozen = !isTouchpadFrozen
                                 },
                                 onButtonEvent = { btn, state ->
                                     networkClient.sendButton(btn, state)
+                                },
+                                onTouchMove = { dx, dy ->
+                                    networkClient.sendTouchpadMove(dx, dy)
                                 },
                                 onRecenter = {
                                     networkClient.sendRecenter()
@@ -159,6 +176,8 @@ class MainActivity : ComponentActivity() {
         super.onResume()
         val connState = networkClient.connectionState.value
         if (connState.isConnected) {
+            val shouldStream = (activeControllerMode == ControllerMode.WII_REMOTE) && isWiiMotionActive
+            motionSensorManager.isMotionActive = shouldStream
             motionSensorManager.start()
         }
     }

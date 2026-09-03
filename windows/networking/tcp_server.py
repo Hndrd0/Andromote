@@ -60,6 +60,10 @@ class TCPServer:
         self.on_state_change: Optional[Callable[[str, Optional[str]], None]] = None
         self.on_latency_update: Optional[Callable[[float], None]] = None
 
+        # Touchpad sub-pixel accumulator
+        self._touch_subpixel_x: float = 0.0
+        self._touch_subpixel_y: float = 0.0
+
     def start(self):
         if self._running:
             return
@@ -306,10 +310,16 @@ class TCPServer:
         elif msg_type == "touchpad_move":
             if not self.is_authenticated:
                 return
-            dx = int(float(msg.get("dx", 0)))
-            dy = int(float(msg.get("dy", 0)))
-            if dx != 0 or dy != 0:
-                self.input_controller.move_cursor_relative(dx, dy)
+            raw_dx = float(msg.get("dx", 0.0))
+            raw_dy = float(msg.get("dy", 0.0))
+            self._touch_subpixel_x += raw_dx
+            self._touch_subpixel_y += raw_dy
+            out_dx = int(self._touch_subpixel_x)
+            out_dy = int(self._touch_subpixel_y)
+            self._touch_subpixel_x -= out_dx
+            self._touch_subpixel_y -= out_dy
+            if out_dx != 0 or out_dy != 0:
+                self.input_controller.move_cursor_relative(out_dx, out_dy)
 
         elif msg_type == "touchpad_tap":
             if not self.is_authenticated:
