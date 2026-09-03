@@ -1,0 +1,66 @@
+# ==============================================================================
+# Andromote .gitignore
+# ==============================================================================
+
+# --- Python & PyInstaller ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.env/
+.venv/
+ENV/
+build/
+dist/
+*.manifest
+*.pyc
+
+# --- Android & Gradle ---
+.gradle/
+.kotlin/
+build/
+*/build/
+app/build/
+android/app/build/
+android/.gradle/
+android/.kotlin/
+*.apk
+*.aab
+*.ap_
+*.dex
+*.class
+bin/
+gen/
+out/
+local.properties
+.cxx/
+.externalNativeBuild/
+captures/
+.navigation/
+
+# --- IDE & Editors ---
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+*.swp
+*.swo
+*~
+.DS_Store
+
+# --- Windows & OS Artefacts ---
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+[Dd]esktop.ini
+$RECYCLE.BIN/
+
+# --- Local Logs & App Settings ---
+*.log
+settings.json
+.andromote/

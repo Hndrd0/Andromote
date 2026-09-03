@@ -1,0 +1,12 @@
+<resources>
+    <color name="primary">#2563EB</color>
+    <color name="primary_dark">#1D4ED8</color>
+    <color name="accent">#38BDF8</color>
+    <color name="background">#0F172A</color>
+    <color name="surface">#1E293B</color>
+    <color name="text_primary">#F8FAFC</color>
+    <color name="text_secondary">#94A3B8</color>
+    <color name="wiimote_white">#F1F5F9</color>
+    <color name="wiimote_btn_border">#94A3B8</color>
+    <color name="wiimote_btn_press">#CBD5E1</color>
+</resources>

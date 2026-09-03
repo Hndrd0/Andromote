@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Andromote</string>
+    <string name="title_controller">Wii Remote</string>
+    <string name="title_connection">PC Connection</string>
+    <string name="title_calibration">Sensor Calibration</string>
+    <string name="action_connect">Connect</string>
+    <string name="action_disconnect">Disconnect</string>
+    <string name="action_recenter">Recenter</string>
+    <string name="action_scan">Scan for PCs</string>
+    <string name="status_disconnected">Disconnected</string>
+    <string name="status_connecting">Connecting...</string>
+    <string name="status_connected">Connected</string>
+</resources>
