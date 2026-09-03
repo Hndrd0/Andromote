@@ -145,6 +145,11 @@ FRIENDLY_ACTIONS = {
     "KEY_PLUS": ("keyboard", VK_OEM_PLUS),
     "KEY_MINUS": ("keyboard", VK_OEM_MINUS),
 
+    # Presentation Keys
+    "KEY_F5": ("keyboard", VK_F5),
+    "KEY_PAGEUP": ("keyboard", VK_PRIOR),
+    "KEY_PAGEDOWN": ("keyboard", VK_NEXT),
+
     # Numbers
     "KEY_1": ("keyboard", ord('1')),
     "KEY_2": ("keyboard", ord('2')),

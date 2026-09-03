@@ -288,6 +288,21 @@ class TCPServer:
             state = msg.get("state", "").lower()
             self._handle_button(btn, state)
 
+        elif msg_type == "scroll":
+            if not self.is_authenticated:
+                return
+            dy = int(msg.get("delta_y", 0))
+            if dy != 0:
+                self.input_controller.mouse_wheel(dy)
+
+        elif msg_type == "double_click":
+            if not self.is_authenticated:
+                return
+            self.input_controller.mouse_down("left")
+            self.input_controller.mouse_up("left")
+            self.input_controller.mouse_down("left")
+            self.input_controller.mouse_up("left")
+
         elif msg_type == "recenter":
             if not self.is_authenticated:
                 return
@@ -304,7 +319,10 @@ class TCPServer:
         mappings = self.settings_manager.get("button_mappings", {})
         action_key = mappings.get(btn_name)
         if not action_key:
-            return
+            if btn_name in FRIENDLY_ACTIONS:
+                action_key = btn_name
+            else:
+                return
 
         action = FRIENDLY_ACTIONS.get(action_key)
         if not action:

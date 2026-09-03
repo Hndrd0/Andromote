@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.border
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -16,8 +18,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wiimote.andromote.model.ConnectionState
+import com.wiimote.andromote.ui.components.AirMousePad
 import com.wiimote.andromote.ui.components.WiiRemotePad
 import com.wiimote.andromote.ui.theme.*
+
+enum class ControllerMode {
+    WII_REMOTE,
+    AIR_MOUSE
+}
 
 @Composable
 fun ControllerScreen(
@@ -32,6 +40,7 @@ fun ControllerScreen(
 ) {
     val configuration = LocalConfiguration.current
     val effectiveLandscape = isLandscape || (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE)
+    var activeMode by remember { mutableStateOf(ControllerMode.WII_REMOTE) }
 
     Column(
         modifier = Modifier
@@ -122,17 +131,77 @@ fun ControllerScreen(
             }
         }
 
-        // Wii Remote Controller Area
+        // Controller Mode Switcher Bar (Wii Remote <-> Air Mouse)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 14.dp, vertical = 6.dp)
+                .clip(RoundedCornerShape(10.dp))
+                .background(BgElevated)
+                .border(1.dp, BorderSubtle, RoundedCornerShape(10.dp))
+                .padding(3.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            // Wii Remote Mode Tab
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(if (activeMode == ControllerMode.WII_REMOTE) AccentCyan else Color.Transparent)
+                    .clickable { activeMode = ControllerMode.WII_REMOTE }
+                    .padding(vertical = 8.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "🪄 Wii Remote",
+                    color = if (activeMode == ControllerMode.WII_REMOTE) BgPrimary else TextSecondary,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 13.sp
+                )
+            }
+
+            // Air Mouse Mode Tab
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(if (activeMode == ControllerMode.AIR_MOUSE) AccentCyan else Color.Transparent)
+                    .clickable { activeMode = ControllerMode.AIR_MOUSE }
+                    .padding(vertical = 8.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "🖱️ Air Mouse",
+                    color = if (activeMode == ControllerMode.AIR_MOUSE) BgPrimary else TextSecondary,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 13.sp
+                )
+            }
+        }
+
+        // Active Controller Interface Area
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
             contentAlignment = Alignment.Center
         ) {
-            WiiRemotePad(
-                isLandscape = effectiveLandscape,
-                onButtonEvent = onButtonEvent
-            )
+            when (activeMode) {
+                ControllerMode.WII_REMOTE -> {
+                    WiiRemotePad(
+                        isLandscape = effectiveLandscape,
+                        onButtonEvent = onButtonEvent
+                    )
+                }
+                ControllerMode.AIR_MOUSE -> {
+                    AirMousePad(
+                        isMotionFrozen = !isMotionActive,
+                        onToggleFreeze = onToggleMotion,
+                        onButtonEvent = onButtonEvent,
+                        onRecenter = onRecenter
+                    )
+                }
+            }
         }
     }
 }

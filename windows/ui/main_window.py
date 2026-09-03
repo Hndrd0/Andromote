@@ -289,6 +289,28 @@ class MainWindow(QMainWindow):
     # --- Motion Tuning Tab ---
     def _build_motion_tab(self):
         layout = QVBoxLayout(self.tab_motion)
+
+        # Quick Tuning Profiles
+        preset_box = QHBoxLayout()
+        lbl_preset = QLabel("Mode Profiles:")
+        lbl_preset.setStyleSheet("font-weight: bold; color: #5AE7FF;")
+        preset_box.addWidget(lbl_preset)
+
+        btn_preset_wii = QPushButton("🪄 Wii Remote")
+        btn_preset_wii.clicked.connect(lambda: self._apply_tuning_preset(18.0, 18.0, 0.04, 0.30, 0.50))
+        preset_box.addWidget(btn_preset_wii)
+
+        btn_preset_mouse = QPushButton("🖱️ Air Mouse")
+        btn_preset_mouse.clicked.connect(lambda: self._apply_tuning_preset(24.0, 24.0, 0.02, 0.35, 0.65))
+        preset_box.addWidget(btn_preset_mouse)
+
+        btn_preset_pres = QPushButton("📊 Presentation")
+        btn_preset_pres.clicked.connect(lambda: self._apply_tuning_preset(15.0, 15.0, 0.05, 0.55, 0.30))
+        preset_box.addWidget(btn_preset_pres)
+
+        preset_box.addStretch()
+        layout.addLayout(preset_box)
+
         form_layout = QGridLayout()
 
         # Sensitivity X
@@ -751,15 +773,18 @@ class MainWindow(QMainWindow):
         self.settings.update(updates)
         self.motion_proc.update_settings(**updates)
 
+    def _apply_tuning_preset(self, sx: float, sy: float, dz: float, sm: float, ac: float):
+        self.spin_sens_x.setValue(sx)
+        self.spin_sens_y.setValue(sy)
+        self.spin_deadzone.setValue(dz)
+        self.spin_smoothing.setValue(sm)
+        self.spin_accel.setValue(ac)
+        self._on_motion_settings_changed()
+
     def _on_reset_motion_defaults(self):
-        self.spin_sens_x.setValue(18.0)
-        self.spin_sens_y.setValue(18.0)
-        self.spin_deadzone.setValue(0.04)
-        self.spin_smoothing.setValue(0.30)
-        self.spin_accel.setValue(0.50)
+        self._apply_tuning_preset(18.0, 18.0, 0.04, 0.30, 0.50)
         self.chk_invert_x.setChecked(False)
         self.chk_invert_y.setChecked(False)
-        self._on_motion_settings_changed()
 
     def _on_mapping_changed(self, btn_key: str, action_val: str):
         mappings = self.settings.get("button_mappings", {})
