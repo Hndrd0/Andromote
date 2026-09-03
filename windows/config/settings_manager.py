@@ -40,6 +40,10 @@ DEFAULT_SETTINGS: Dict[str, Any] = {
 
     # Button Mappings
     "button_mappings": dict(DEFAULT_BUTTON_MAPPINGS),
+
+    # Terminal & Diagnostics
+    "show_debug_terminal": False,
+    "verbose_logging": False,
 }
 
 

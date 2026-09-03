@@ -127,7 +127,7 @@ fun ConnectionScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 4.dp),
-                color = PrimaryBlue
+                color = AccentCyan
             )
         }
 
@@ -210,8 +210,8 @@ fun ConnectionScreen(
             colors = OutlinedTextFieldDefaults.colors(
                 focusedTextColor = TextPrimary,
                 unfocusedTextColor = TextPrimary,
-                focusedBorderColor = PrimaryBlue,
-                unfocusedBorderColor = Color.Gray
+                focusedBorderColor = AccentCyan,
+                unfocusedBorderColor = BorderSubtle
             )
         )
 

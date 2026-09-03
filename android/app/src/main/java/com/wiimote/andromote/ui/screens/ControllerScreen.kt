@@ -86,7 +86,8 @@ fun ControllerScreen(
                     Button(
                         onClick = onToggleMotion,
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = if (isMotionActive) PrimaryBlue else Color(0xFF475569)
+                            containerColor = if (isMotionActive) AccentCyan else BgElevated,
+                            contentColor = if (isMotionActive) BgPrimary else TextSecondary
                         ),
                         shape = RoundedCornerShape(8.dp),
                         contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
@@ -101,7 +102,10 @@ fun ControllerScreen(
 
                 Button(
                     onClick = onRecenter,
-                    colors = ButtonDefaults.buttonColors(containerColor = AccentGreen),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = AccentGreen,
+                        contentColor = BgPrimary
+                    ),
                     shape = RoundedCornerShape(8.dp),
                     contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
                 ) {

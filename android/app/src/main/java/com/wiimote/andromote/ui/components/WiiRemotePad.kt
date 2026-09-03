@@ -81,7 +81,7 @@ private fun PortraitLayout(onButtonEvent: (String, String) -> Unit) {
                     modifier = Modifier
                         .size(8.dp)
                         .clip(CircleShape)
-                        .background(if (idx == 0) AccentCyan else Color.LightGray)
+                        .background(if (idx == 0) AccentCyan else TextTertiary.copy(alpha = 0.3f))
                 )
                 if (idx < 3) Spacer(modifier = Modifier.width(12.dp))
             }
@@ -94,19 +94,20 @@ private fun PortraitLayout(onButtonEvent: (String, String) -> Unit) {
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        // Large 'A' Button
+        // Large 'A' Button (Website Electric Cyan)
         TactileButton(
             label = "A",
             buttonId = "A",
             modifier = Modifier.size(72.dp),
             fontSize = 28.sp,
             isRound = true,
+            textColor = AccentCyan,
             onButtonEvent = onButtonEvent
         )
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        // Trigger 'B' Button (on-screen ergonomic secondary button)
+        // Trigger 'B' Button (Website Coral Red)
         TactileButton(
             label = "B (Trigger)",
             buttonId = "B",
@@ -115,6 +116,7 @@ private fun PortraitLayout(onButtonEvent: (String, String) -> Unit) {
                 .height(44.dp),
             fontSize = 16.sp,
             isRound = false,
+            textColor = AccentRed,
             onButtonEvent = onButtonEvent
         )
 
@@ -132,7 +134,8 @@ private fun PortraitLayout(onButtonEvent: (String, String) -> Unit) {
                 buttonId = "HOME",
                 modifier = Modifier.size(44.dp),
                 isRound = true,
-                accentColor = PrimaryBlue,
+                accentColor = BgElevated,
+                textColor = AccentCyan,
                 onButtonEvent = onButtonEvent
             )
             TactileButton(label = "+", buttonId = "PLUS", modifier = Modifier.size(40.dp), isRound = true, onButtonEvent = onButtonEvent)
@@ -161,7 +164,7 @@ private fun PortraitLayout(onButtonEvent: (String, String) -> Unit) {
                     modifier = Modifier
                         .size(5.dp)
                         .clip(CircleShape)
-                        .background(Color.Gray.copy(alpha = 0.4f))
+                        .background(TextTertiary.copy(alpha = 0.4f))
                 )
                 Spacer(modifier = Modifier.width(6.dp))
             }
@@ -195,11 +198,26 @@ private fun LandscapeLayout(onButtonEvent: (String, String) -> Unit) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 TactileButton(label = "—", buttonId = "MINUS", modifier = Modifier.size(40.dp), isRound = true, onButtonEvent = onButtonEvent)
-                TactileButton(label = "🏠", buttonId = "HOME", modifier = Modifier.size(46.dp), isRound = true, accentColor = PrimaryBlue, onButtonEvent = onButtonEvent)
+                TactileButton(
+                    label = "🏠",
+                    buttonId = "HOME",
+                    modifier = Modifier.size(46.dp),
+                    isRound = true,
+                    accentColor = BgElevated,
+                    textColor = AccentCyan,
+                    onButtonEvent = onButtonEvent
+                )
                 TactileButton(label = "+", buttonId = "PLUS", modifier = Modifier.size(40.dp), isRound = true, onButtonEvent = onButtonEvent)
             }
             Spacer(modifier = Modifier.height(16.dp))
-            TactileButton(label = "B Trigger", buttonId = "B", modifier = Modifier.width(140.dp).height(40.dp), isRound = false, onButtonEvent = onButtonEvent)
+            TactileButton(
+                label = "B Trigger",
+                buttonId = "B",
+                modifier = Modifier.width(140.dp).height(40.dp),
+                isRound = false,
+                textColor = AccentRed,
+                onButtonEvent = onButtonEvent
+            )
         }
 
         // Right section: A, 1, 2
@@ -208,7 +226,15 @@ private fun LandscapeLayout(onButtonEvent: (String, String) -> Unit) {
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            TactileButton(label = "A", buttonId = "A", modifier = Modifier.size(72.dp), fontSize = 28.sp, isRound = true, onButtonEvent = onButtonEvent)
+            TactileButton(
+                label = "A",
+                buttonId = "A",
+                modifier = Modifier.size(72.dp),
+                fontSize = 28.sp,
+                isRound = true,
+                textColor = AccentCyan,
+                onButtonEvent = onButtonEvent
+            )
             Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
                 TactileButton(label = "1", buttonId = "1", modifier = Modifier.size(42.dp), isRound = true, onButtonEvent = onButtonEvent)
                 TactileButton(label = "2", buttonId = "2", modifier = Modifier.size(42.dp), isRound = true, onButtonEvent = onButtonEvent)
@@ -320,24 +346,28 @@ fun TactileButton(
     fontSize: androidx.compose.ui.unit.TextUnit = 18.sp,
     isRound: Boolean = true,
     accentColor: Color? = null,
+    textColor: Color? = null,
     onButtonEvent: (String, String) -> Unit
 ) {
     var isPressed by remember { mutableStateOf(false) }
     val view = LocalView.current
 
-    val shape = if (isRound) CircleShape else RoundedCornerShape(12.dp)
+    val shape = if (isRound) CircleShape else RoundedCornerShape(14.dp)
     val bgColor = if (isPressed) {
         WiimoteButtonPressed
     } else {
         accentColor ?: WiimoteButtonNormal
     }
 
+    val displayTextColor = textColor ?: if (accentColor != null) Color.White else WiimoteText
+    val borderColor = if (isPressed) AccentCyan else WiimoteBorder
+
     Box(
         modifier = modifier
-            .shadow(if (isPressed) 1.dp else 4.dp, shape)
+            .shadow(if (isPressed) 2.dp else 6.dp, shape)
             .clip(shape)
             .background(bgColor)
-            .border(1.5.dp, WiimoteBorder, shape)
+            .border(1.5.dp, borderColor, shape)
             .pointerInput(buttonId) {
                 awaitEachGesture {
                     awaitFirstDown()
@@ -354,7 +384,7 @@ fun TactileButton(
     ) {
         Text(
             text = label,
-            color = if (accentColor != null) Color.White else WiimoteText,
+            color = displayTextColor,
             fontSize = fontSize,
             fontWeight = FontWeight.ExtraBold
         )

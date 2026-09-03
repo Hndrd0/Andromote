@@ -50,7 +50,10 @@ fun CalibrationScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = AccentGreen),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = AccentGreen,
+                contentColor = BgPrimary
+            ),
             shape = RoundedCornerShape(10.dp)
         ) {
             Text("🎯 Recenter Neutral Orientation", fontSize = 16.sp, fontWeight = FontWeight.Bold)
@@ -71,7 +74,11 @@ fun CalibrationScreen(
                     value = sensitivity,
                     onValueChange = { sensitivity = it },
                     valueRange = 5f..50f,
-                    colors = SliderDefaults.colors(thumbColor = PrimaryBlue, activeTrackColor = AccentCyan)
+                    colors = SliderDefaults.colors(
+                        thumbColor = AccentCyan,
+                        activeTrackColor = AccentCyan,
+                        inactiveTrackColor = BgElevated
+                    )
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -82,7 +89,11 @@ fun CalibrationScreen(
                     value = smoothing,
                     onValueChange = { smoothing = it },
                     valueRange = 0f..0.8f,
-                    colors = SliderDefaults.colors(thumbColor = PrimaryBlue, activeTrackColor = AccentCyan)
+                    colors = SliderDefaults.colors(
+                        thumbColor = AccentCyan,
+                        activeTrackColor = AccentCyan,
+                        inactiveTrackColor = BgElevated
+                    )
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -93,7 +104,11 @@ fun CalibrationScreen(
                     value = deadzone,
                     onValueChange = { deadzone = it },
                     valueRange = 0f..0.15f,
-                    colors = SliderDefaults.colors(thumbColor = PrimaryBlue, activeTrackColor = AccentCyan)
+                    colors = SliderDefaults.colors(
+                        thumbColor = AccentCyan,
+                        activeTrackColor = AccentCyan,
+                        inactiveTrackColor = BgElevated
+                    )
                 )
 
                 Spacer(modifier = Modifier.height(10.dp))
@@ -105,7 +120,16 @@ fun CalibrationScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text("Invert X Axis", color = TextPrimary)
-                    Switch(checked = invertX, onCheckedChange = { invertX = it })
+                    Switch(
+                        checked = invertX,
+                        onCheckedChange = { invertX = it },
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = BgPrimary,
+                            checkedTrackColor = AccentCyan,
+                            uncheckedThumbColor = TextTertiary,
+                            uncheckedTrackColor = BgElevated
+                        )
+                    )
                 }
 
                 Row(
@@ -114,7 +138,16 @@ fun CalibrationScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text("Invert Y Axis", color = TextPrimary)
-                    Switch(checked = invertY, onCheckedChange = { invertY = it })
+                    Switch(
+                        checked = invertY,
+                        onCheckedChange = { invertY = it },
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = BgPrimary,
+                            checkedTrackColor = AccentCyan,
+                            uncheckedThumbColor = TextTertiary,
+                            uncheckedTrackColor = BgElevated
+                        )
+                    )
                 }
             }
         }

@@ -105,7 +105,7 @@ class MainWindow(QMainWindow):
         title = QLabel("Andromote")
         title.setObjectName("HeaderTitle")
         subtitle = QLabel(f"IP: {get_local_ip()}  |  TCP: {self.tcp_srv.port}  |  Motion UDP: {self.udp_srv.port}")
-        subtitle.setStyleSheet("color: #64748B; font-size: 11px;")
+        subtitle.setStyleSheet("color: #60606A; font-size: 11px; font-family: 'JetBrains Mono', 'Consolas', monospace;")
         title_box.addWidget(title)
         title_box.addWidget(subtitle)
         header_layout.addLayout(title_box)
@@ -116,14 +116,21 @@ class MainWindow(QMainWindow):
         self.btn_master_toggle = QPushButton("Controller: ENABLED")
         self.btn_master_toggle.setCheckable(True)
         self.btn_master_toggle.setChecked(self.input_ctrl.enabled)
+        self.btn_master_toggle.setStyleSheet("background-color: #5AE7FF; color: #08080C; font-weight: bold; border-radius: 6px;")
         self.btn_master_toggle.clicked.connect(self._toggle_master_controller)
         header_layout.addWidget(self.btn_master_toggle)
 
         # Connection Status Badge
         self.lbl_status_badge = QLabel("LISTENING")
         self.lbl_status_badge.setObjectName("StatusBadge")
-        self.lbl_status_badge.setStyleSheet("background-color: #854D0E; color: #FEF08A;")
+        self.lbl_status_badge.setStyleSheet("background-color: #14141C; color: #A0A0AA; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 100px; padding: 4px 12px;")
         header_layout.addWidget(self.lbl_status_badge)
+
+        # Settings Button
+        self.btn_settings = QPushButton("⚙️ Settings")
+        self.btn_settings.setStyleSheet("background-color: #1A1A24; color: #F5F5F7; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 6px; padding: 6px 14px; font-weight: 600;")
+        self.btn_settings.clicked.connect(self._open_settings_dialog)
+        header_layout.addWidget(self.btn_settings)
 
         root_layout.addWidget(header_frame)
 
@@ -161,9 +168,13 @@ class MainWindow(QMainWindow):
         conn_layout = QGridLayout(conn_group)
 
         self.lbl_conn_device = QLabel("None (Waiting for connection)")
+        self.lbl_conn_device.setStyleSheet("color: #F5F5F7; font-weight: 600;")
         self.lbl_conn_ip = QLabel("—")
+        self.lbl_conn_ip.setStyleSheet("color: #F5F5F7; font-family: 'JetBrains Mono', monospace;")
         self.lbl_conn_latency = QLabel("0 ms")
+        self.lbl_conn_latency.setStyleSheet("color: #4ADE80; font-family: 'JetBrains Mono', monospace; font-weight: 600;")
         self.lbl_conn_rate = QLabel("0 Hz")
+        self.lbl_conn_rate.setStyleSheet("color: #5AE7FF; font-family: 'JetBrains Mono', monospace; font-weight: 600;")
 
         conn_layout.addWidget(QLabel("Connected Device:"), 0, 0)
         conn_layout.addWidget(self.lbl_conn_device, 0, 1)
@@ -182,11 +193,17 @@ class MainWindow(QMainWindow):
         telem_layout = QGridLayout(telem_group)
 
         self.lbl_yaw = QLabel("0.0°")
+        self.lbl_yaw.setStyleSheet("color: #5AE7FF; font-family: 'JetBrains Mono', monospace; font-weight: 600;")
         self.lbl_pitch = QLabel("0.0°")
+        self.lbl_pitch.setStyleSheet("color: #5AE7FF; font-family: 'JetBrains Mono', monospace; font-weight: 600;")
         self.lbl_roll = QLabel("0.0°")
+        self.lbl_roll.setStyleSheet("color: #5AE7FF; font-family: 'JetBrains Mono', monospace; font-weight: 600;")
         self.lbl_gyro = QLabel("X: 0.00 | Y: 0.00 | Z: 0.00 rad/s")
+        self.lbl_gyro.setStyleSheet("color: #A0A0AA; font-family: 'JetBrains Mono', monospace;")
         self.lbl_accel = QLabel("X: 0.00 | Y: 0.00 | Z: 0.00 m/s²")
+        self.lbl_accel.setStyleSheet("color: #A0A0AA; font-family: 'JetBrains Mono', monospace;")
         self.lbl_packets = QLabel("0")
+        self.lbl_packets.setStyleSheet("color: #5AE7FF; font-family: 'JetBrains Mono', monospace; font-weight: 600;")
 
         telem_layout.addWidget(QLabel("Yaw (Azimuth):"), 0, 0)
         telem_layout.addWidget(self.lbl_yaw, 0, 1)
@@ -402,7 +419,7 @@ class MainWindow(QMainWindow):
         self.chk_shake.toggled.connect(lambda v: self.settings.set("gesture_shake_enabled", v))
         self.combo_shake = self._create_action_combo("gesture_shake_action", "KEY_SPACE")
         badge_shake = QLabel(" SHAKE ")
-        badge_shake.setStyleSheet("background-color: #334155; color: #94A3B8; padding: 2px 6px; border-radius: 4px; font-weight: bold;")
+        badge_shake.setStyleSheet("background-color: #1A1A24; color: #A0A0AA; padding: 3px 8px; border-radius: 6px; font-weight: bold; border: 1px solid rgba(255, 255, 255, 0.08);")
         self._gesture_badges["shake"] = badge_shake
         grid_d.addWidget(self.chk_shake, 0, 0)
         grid_d.addWidget(QLabel("Action:"), 0, 1)
@@ -415,7 +432,7 @@ class MainWindow(QMainWindow):
         self.chk_flick.toggled.connect(lambda v: self.settings.set("gesture_flick_enabled", v))
         self.combo_flick = self._create_action_combo("gesture_flick_action", "KEY_UP")
         badge_flick = QLabel(" FLICK ")
-        badge_flick.setStyleSheet("background-color: #334155; color: #94A3B8; padding: 2px 6px; border-radius: 4px; font-weight: bold;")
+        badge_flick.setStyleSheet("background-color: #1A1A24; color: #A0A0AA; padding: 3px 8px; border-radius: 6px; font-weight: bold; border: 1px solid rgba(255, 255, 255, 0.08);")
         self._gesture_badges["wrist_snap"] = badge_flick
         grid_d.addWidget(self.chk_flick, 1, 0)
         grid_d.addWidget(QLabel("Action:"), 1, 1)
@@ -428,7 +445,7 @@ class MainWindow(QMainWindow):
         self.chk_thrust.toggled.connect(lambda v: self.settings.set("gesture_thrust_enabled", v))
         self.combo_thrust = self._create_action_combo("gesture_thrust_action", "KEY_F")
         badge_thrust = QLabel(" THRUST ")
-        badge_thrust.setStyleSheet("background-color: #334155; color: #94A3B8; padding: 2px 6px; border-radius: 4px; font-weight: bold;")
+        badge_thrust.setStyleSheet("background-color: #1A1A24; color: #A0A0AA; padding: 3px 8px; border-radius: 6px; font-weight: bold; border: 1px solid rgba(255, 255, 255, 0.08);")
         self._gesture_badges["thrust"] = badge_thrust
         grid_d.addWidget(self.chk_thrust, 2, 0)
         grid_d.addWidget(QLabel("Action:"), 2, 1)
@@ -447,7 +464,7 @@ class MainWindow(QMainWindow):
         self.chk_offscreen.toggled.connect(lambda v: self.settings.set("gesture_offscreen_enabled", v))
         self.combo_offscreen = self._create_action_combo("gesture_offscreen_action", "KEY_R")
         badge_offscreen = QLabel(" OFF-SCREEN ")
-        badge_offscreen.setStyleSheet("background-color: #334155; color: #94A3B8; padding: 2px 6px; border-radius: 4px; font-weight: bold;")
+        badge_offscreen.setStyleSheet("background-color: #1A1A24; color: #A0A0AA; padding: 3px 8px; border-radius: 6px; font-weight: bold; border: 1px solid rgba(255, 255, 255, 0.08);")
         self._gesture_badges["off_screen"] = badge_offscreen
         grid_p.addWidget(self.chk_offscreen, 0, 0)
         grid_p.addWidget(QLabel("Action:"), 0, 1)
@@ -467,9 +484,9 @@ class MainWindow(QMainWindow):
         self.combo_steer_l = self._create_action_combo("gesture_steer_left_action", "KEY_A")
         self.combo_steer_r = self._create_action_combo("gesture_steer_right_action", "KEY_D")
         badge_steer_l = QLabel(" STEER L ")
-        badge_steer_l.setStyleSheet("background-color: #334155; color: #94A3B8; padding: 2px 6px; border-radius: 4px; font-weight: bold;")
+        badge_steer_l.setStyleSheet("background-color: #1A1A24; color: #A0A0AA; padding: 3px 8px; border-radius: 6px; font-weight: bold; border: 1px solid rgba(255, 255, 255, 0.08);")
         badge_steer_r = QLabel(" STEER R ")
-        badge_steer_r.setStyleSheet("background-color: #334155; color: #94A3B8; padding: 2px 6px; border-radius: 4px; font-weight: bold;")
+        badge_steer_r.setStyleSheet("background-color: #1A1A24; color: #A0A0AA; padding: 3px 8px; border-radius: 6px; font-weight: bold; border: 1px solid rgba(255, 255, 255, 0.08);")
         self._gesture_badges["steer_left"] = badge_steer_l
         self._gesture_badges["steer_right"] = badge_steer_r
         grid_o.addWidget(self.chk_steering, 0, 0)
@@ -487,9 +504,9 @@ class MainWindow(QMainWindow):
         self.combo_twist_l = self._create_action_combo("gesture_twist_left_action", "KEY_Q")
         self.combo_twist_r = self._create_action_combo("gesture_twist_right_action", "KEY_E")
         badge_twist_l = QLabel(" TWIST L ")
-        badge_twist_l.setStyleSheet("background-color: #334155; color: #94A3B8; padding: 2px 6px; border-radius: 4px; font-weight: bold;")
+        badge_twist_l.setStyleSheet("background-color: #1A1A24; color: #A0A0AA; padding: 3px 8px; border-radius: 6px; font-weight: bold; border: 1px solid rgba(255, 255, 255, 0.08);")
         badge_twist_r = QLabel(" TWIST R ")
-        badge_twist_r.setStyleSheet("background-color: #334155; color: #94A3B8; padding: 2px 6px; border-radius: 4px; font-weight: bold;")
+        badge_twist_r.setStyleSheet("background-color: #1A1A24; color: #A0A0AA; padding: 3px 8px; border-radius: 6px; font-weight: bold; border: 1px solid rgba(255, 255, 255, 0.08);")
         self._gesture_badges["twist_left"] = badge_twist_l
         self._gesture_badges["twist_right"] = badge_twist_r
         grid_o.addWidget(self.chk_twist, 2, 0)
@@ -519,11 +536,11 @@ class MainWindow(QMainWindow):
         badge = self._gesture_badges.get(name)
         if badge:
             if active:
-                badge.setStyleSheet("background-color: #16A34A; color: #FFFFFF; padding: 2px 6px; border-radius: 4px; font-weight: bold;")
+                badge.setStyleSheet("background-color: #5AE7FF; color: #08080C; padding: 3px 8px; border-radius: 6px; font-weight: bold; border: 1px solid #5AE7FF;")
                 if name not in ("steer_left", "steer_right", "off_screen"):
-                    QTimer.singleShot(250, lambda: badge.setStyleSheet("background-color: #334155; color: #94A3B8; padding: 2px 6px; border-radius: 4px; font-weight: bold;"))
+                    QTimer.singleShot(250, lambda: badge.setStyleSheet("background-color: #1A1A24; color: #A0A0AA; padding: 3px 8px; border-radius: 6px; font-weight: bold; border: 1px solid rgba(255, 255, 255, 0.08);"))
             else:
-                badge.setStyleSheet("background-color: #334155; color: #94A3B8; padding: 2px 6px; border-radius: 4px; font-weight: bold;")
+                badge.setStyleSheet("background-color: #1A1A24; color: #A0A0AA; padding: 3px 8px; border-radius: 6px; font-weight: bold; border: 1px solid rgba(255, 255, 255, 0.08);")
 
     # --- Dolphin Tab ---
     def _build_dolphin_tab(self):
@@ -534,7 +551,7 @@ class MainWindow(QMainWindow):
 
         dsu_port = self.settings.get("dsu_port", 26760)
         lbl_status = QLabel(f"Status: Active on UDP Port {dsu_port}")
-        lbl_status.setStyleSheet("color: #10B981; font-weight: 700; font-size: 14px;")
+        lbl_status.setStyleSheet("color: #4ADE80; font-weight: 700; font-size: 14px; font-family: 'JetBrains Mono', monospace;")
         vbox.addWidget(lbl_status)
 
         guide = QLabel(
@@ -581,6 +598,10 @@ class MainWindow(QMainWindow):
         act_toggle.triggered.connect(self._toggle_master_controller)
         tray_menu.addAction(act_toggle)
 
+        act_settings = QAction("⚙️ Settings", self)
+        act_settings.triggered.connect(self._open_settings_dialog)
+        tray_menu.addAction(act_settings)
+
         tray_menu.addSeparator()
 
         act_exit = QAction("Exit", self)
@@ -590,6 +611,11 @@ class MainWindow(QMainWindow):
         self.tray_icon.setContextMenu(tray_menu)
         self.tray_icon.activated.connect(self._on_tray_activated)
         self.tray_icon.show()
+
+    def _open_settings_dialog(self):
+        from .console_utils import SettingsDialog
+        dlg = SettingsDialog(self.settings, self)
+        dlg.exec()
 
     def _on_tray_activated(self, reason):
         if reason == QSystemTrayIcon.ActivationReason.Trigger:
@@ -629,15 +655,15 @@ class MainWindow(QMainWindow):
     def _on_connection_state_changed(self, status: str, details: str):
         if status == "connected":
             self.lbl_status_badge.setText("CONNECTED")
-            self.lbl_status_badge.setStyleSheet("background-color: #065F46; color: #6EE7B7;")
+            self.lbl_status_badge.setStyleSheet("background-color: rgba(74, 222, 128, 0.15); color: #4ADE80; border: 1px solid #4ADE80; border-radius: 100px; padding: 4px 14px;")
             self.lbl_conn_device.setText(details or "Authenticated Phone")
             self.lbl_conn_ip.setText(self.tcp_srv.client_ip or "—")
         elif status == "connecting":
             self.lbl_status_badge.setText("CONNECTING")
-            self.lbl_status_badge.setStyleSheet("background-color: #854D0E; color: #FEF08A;")
+            self.lbl_status_badge.setStyleSheet("background-color: rgba(90, 231, 255, 0.15); color: #5AE7FF; border: 1px solid #5AE7FF; border-radius: 100px; padding: 4px 14px;")
         else:
             self.lbl_status_badge.setText("LISTENING")
-            self.lbl_status_badge.setStyleSheet("background-color: #1E293B; color: #94A3B8;")
+            self.lbl_status_badge.setStyleSheet("background-color: #14141C; color: #A0A0AA; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 100px; padding: 4px 14px;")
             self.lbl_conn_device.setText("None (Waiting for connection)")
             self.lbl_conn_ip.setText("—")
             self.lbl_conn_latency.setText("0 ms")
@@ -675,10 +701,10 @@ class MainWindow(QMainWindow):
         self.btn_master_toggle.setChecked(enabled)
         if enabled:
             self.btn_master_toggle.setText("Controller: ENABLED")
-            self.btn_master_toggle.setStyleSheet("background-color: #2563EB;")
+            self.btn_master_toggle.setStyleSheet("background-color: #5AE7FF; color: #08080C; font-weight: bold; border-radius: 6px;")
         else:
             self.btn_master_toggle.setText("Controller: DISABLED")
-            self.btn_master_toggle.setStyleSheet("background-color: #64748B;")
+            self.btn_master_toggle.setStyleSheet("background-color: #1A1A24; color: #A0A0AA; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 6px;")
 
     def _on_refresh_pin(self):
         new_pin = self.pairing_mgr.refresh_pin()

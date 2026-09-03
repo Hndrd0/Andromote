@@ -38,10 +38,22 @@ def main():
         datefmt="%H:%M:%S"
     )
     logger = logging.getLogger("AndromoteMain")
-    logger.info("Starting Andromote Windows Receiver...")
 
     # Load Settings
     settings = get_settings_manager()
+    if settings.get("verbose_logging", False) or args.debug:
+        logging.getLogger().setLevel(logging.DEBUG)
+
+    # Attach in-app log ring buffer for GUI terminal viewer
+    from windows.ui.console_utils import InAppLogHandler, set_console_visible
+    InAppLogHandler.get_instance()
+
+    # Hide OS terminal window on startup if running GUI and not requested
+    show_terminal = settings.get("show_debug_terminal", False) or args.debug
+    if not args.no_gui and not show_terminal:
+        set_console_visible(False)
+
+    logger.info("Starting Andromote Windows Receiver...")
 
     # Input Controller & Safety
     input_ctrl = get_input_controller(mock_mode=args.mock_mode)
