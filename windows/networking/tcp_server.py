@@ -303,6 +303,22 @@ class TCPServer:
             self.input_controller.mouse_down("left")
             self.input_controller.mouse_up("left")
 
+        elif msg_type == "touchpad_move":
+            if not self.is_authenticated:
+                return
+            dx = int(float(msg.get("dx", 0)))
+            dy = int(float(msg.get("dy", 0)))
+            if dx != 0 or dy != 0:
+                self.input_controller.move_cursor_relative(dx, dy)
+
+        elif msg_type == "touchpad_tap":
+            if not self.is_authenticated:
+                return
+            fingers = int(msg.get("fingers", 1))
+            btn = "right" if fingers == 2 else "left"
+            self.input_controller.mouse_down(btn)
+            self.input_controller.mouse_up(btn)
+
         elif msg_type == "recenter":
             if not self.is_authenticated:
                 return
