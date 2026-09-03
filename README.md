@@ -4,6 +4,7 @@
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB.svg?logo=python&logoColor=white)](https://www.python.org/)
 [![Kotlin](https://img.shields.io/badge/Kotlin-Jetpack%20Compose-7F52FF.svg?logo=kotlin&logoColor=white)](https://kotlinlang.org/)
 [![Dolphin](https://img.shields.io/badge/Dolphin-DSU%20%2F%20Cemuhook-009688.svg?logo=dolphin&logoColor=white)](https://dolphin-emu.org/)
+[![Build & Release](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF.svg?logo=github-actions&logoColor=white)](#)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 > **Turn any Android smartphone into an authentic, ultra-low-latency Nintendo Wii Remote and motion air-mouse for Windows PCs and the Dolphin Emulator.**
