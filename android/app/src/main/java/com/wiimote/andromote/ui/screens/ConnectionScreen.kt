@@ -6,6 +6,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -119,7 +122,7 @@ fun ConnectionScreen(
 
             IconButton(onClick = onScan, enabled = !isScanning) {
                 Icon(
-                    imageVector = androidx.compose.material.icons.Icons.Default.Refresh,
+                    imageVector = Icons.Default.Refresh,
                     contentDescription = "Scan for PCs",
                     tint = AccentCyan
                 )
@@ -175,7 +178,7 @@ fun ConnectionScreen(
                         ) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(
-                                    imageVector = androidx.compose.material.icons.Icons.Default.Share,
+                                    imageVector = Icons.Default.Share,
                                     contentDescription = "PC Node",
                                     tint = AccentCyan
                                 )
